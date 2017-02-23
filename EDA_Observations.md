@@ -82,9 +82,9 @@ Freddie Mac issues securities in 12 deal types:
 
 **Pros / Cons:**
 
-Pros - this dataset covers many
+Pros - This dataset covers all securitized loans. It appears to include not just active, but previously foreclosed loans as well.
 
-For the initial analysis, only the 10 Year K-000 series deals will be analyzed. These deals span the longest period of longevity, which is from 2009-2017.
+Cons - This data does not contain quarterly time-series data for each property, but does contain the property financial performance data at origination (loan creation), most recent of quarter, most recent end-of-year, and previous year end-of year data. This covers about three years of a loan's term. The longest allowable loan term is 10 years and most get refinanced prior to the maturity date or have existence for significantly less that 10 years, so covering 3 years of the term should give an indication of changes in performance.
 
 | **Column Name**      | **Type** | **Non-null**     | **Unique** |
 | -------------------- |:------------:|:------------:|:-----------:|
