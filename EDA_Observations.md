@@ -12,39 +12,38 @@ Out[21]: 11570
 
 **Column Data Types:**
 
-| **Column Name**      | **Non-Null** | **Type**     | **Convert** |
-| -------------------- |:------------:|:------------:|:-----------:|
-| lnno                 | 338445       |  int64       | leave       |
-| quarter              | 338445       |  object(str) | datetime    |
-| mrtg_status          | 338445       |  int64       | get_dummies |
-| amt_upb_endg         | 328999       |  float64     |  leave      |
-| liq_dte              | 9160         |  object(str) | datetime    |
-| liq_upb_amt          | 9164         |  float64     | leave       |
-| dt_sold              | 73           |  object(str) | datetime    |
-| cd_fxfltr            | 130063       |  object(str) | get_dummies |
-| cnt_amtn_per         | 338428       |  float64     | leave       |
-| cnt_blln_term        | 338428       |  float64     | leave       |
-| cnt_io_per           | 338419       |  float64     | leave       |
-| dt_io_end            | 98108        |  object(str) | datetime    |
-| cnt_mrtg_term        | 338445       |  int64       | leave       |
-| cnt_rsdntl_unit      | 338411       |  float64     | leave       |
-| cnt_yld_maint        | 338445       |  int64       | leave       |
-| code_int             | 338445       |  object      | get_dummies |
-| rate_dcr             | 338290       |  float64     | leave       |
-| rate_int             | 338416       |  float64     | leave       |  
-| rate_ltv             | 338392       |  float64     | leave       |
-| amt_upb_pch          | 338445       |  float64     | leave       |
-| dt_fund              | 338445       |  object(str) | datetime    |
-| dt_mty               | 338445       |  object(str) | datetime    |
-| code_st              | 38445        |  object(str) | leave       |
-| geographical_region  | 338048       |  object(str) | leave       |
-| **id_link_grp**      | 66308        |  float64     | leave       |
-| code_sr              | 19684        |  object(str) | get_dummies |
-| reo_operating_expinc | 74           |  float64     | leave       |
-| prefcl_fcl_expinc    | 74           |  float64     | leave       |
-| selling_expinc       | 74           |  float64     | leave       |
-| sales_price          | 73           |  float64     | leave       |
-
+|  Column Name | Type | Non-null | Unique | Example  | **Convert** |
+|  :--- | :---: | :---: | :---: | :---  | :-----------:|
+|  lnno | int64 | 338445 | 11570 | 99940  | leave       |
+|  quarter | object | 338445 | 89 | y07q3  | datetime    |
+|  mrtg_status | int64 | 338445 | 5 | 100  | int64 -> get_dummies |
+|  amt_upb_endg | float64 | 328999 | 263138 | 5659645.77  |  leave      |
+|  liq_dte | object | 9160 | 2332 | nan  | datetime    |
+|  liq_upb_amt | float64 | 9164 | 8586 | nan  | leave       |
+|  dt_sold | object | 73 | 60 | nan  | datetime    |
+|  cd_fxfltr | object | 130063 | 3 | FXDFLT  | str -> get_dummies |
+|  cnt_amtn_per | float64 | 338428 | 148 | 360.0  | leave       |
+|  cnt_blln_term | float64 | 338428 | 220 | 87.0  | leave       |
+|  cnt_io_per | float64 | 338419 | 105 | 0.0  | leave       |
+|  dt_io_end | object | 98108 | 225 | nan  | datetime    |
+|  cnt_mrtg_term | int64 | 338445 | 243 | 87  | leave       |
+|  cnt_rsdntl_unit | float64 | 338411 | 768 | 336.0  | leave       |
+|  cnt_yld_maint | int64 | 338445 | 178 | 75  | leave       |
+|  code_int | object | 338445 | 2 | FIX  | str -> get_dummies |
+|  rate_dcr | float64 | 338290 | 2015 | 1.311  | leave       |
+|  rate_int | float64 | 338416 | 7296 | 0.0594  | leave       |  
+|  rate_ltv | float64 | 338392 | 6905 | 0.79122  | leave       |
+|  amt_upb_pch | float64 | 338445 | 4659 | 5669285.36  | leave       |
+|  dt_fund | object | 338445 | 3589 | 25JUL2007  | datetime    |
+|  dt_mty | object | 338445 | 484 | 01SEP2014  | datetime    |
+|  code_st | object | 338445 | 50 | LA  | leave       |
+|  geographical_region | object | 338048 | 549 | New Orleans, LA MSA  | leave       |
+|  id_link_grp | float64 | 66308 | 1118 | 75103.0  | leave       |
+|  code_sr | object | 19684 | 4 | nan  | str -> get_dummies |
+|  reo_operating_expinc | float64 | 74 | 70 | nan  | leave       |
+|  prefcl_fcl_expinc | float64 | 74 | 73 | nan  | leave       |
+|  selling_expinc | float64 | 74 | 69 | nan  | leave       |
+|  sales_price | float64 | 73 | 65 | nan  | leave       |
 
 **'id_link_grp'** links together loans that are related to the same property
 
@@ -86,98 +85,98 @@ Pros - This dataset covers all securitized loans. It appears to include not just
 
 Cons - This data does not contain quarterly time-series data for each property, but does contain the property financial performance data at origination (loan creation), most recent of quarter, most recent end-of-year, and previous year end-of year data. This covers about three years of a loan's term. The longest allowable loan term is 10 years and most get refinanced prior to the maturity date or have existence for significantly less that 10 years, so covering 3 years of the term should give an indication of changes in performance.
 
-| **Column Name**      | **Type** | **Non-null**     | **Unique** |
-| -------------------- |:------------:|:------------:|:-----------:|
-|  #_properties | object | 7855 | 8  |
-|  2nd_preceding_fydscr_(ncf) | object | 7855 | 1356  |
-|  actual_balance | object | 7855 | 6650  |
-|  balance_range | object | 7855 | 13  |
-|  balloon | object | 7855 | 2  |
-|  city | object | 7855 | 1771  |
-|  current%_of_deal | float64 | 7855 | 147  |
-|  current_bal_rank | int64 | 7855 | 153  |
-|  current_endingsched_balance | object | 7855 | 6650  |
-|  currentloan_balance | object | 7855 | 6650  |
-|  cut-off_dateloan_balance | object | 7855 | 6007  |
-|  date_added_to_servicer_watchlist_ | object | 7855 | 94  |
-|  deal | object | 7855 | 113  |
-|  distributiondate | object | 7855 | 1  |
-|  dscr_(ncf) | float64 | 7855 | 1765  |
-|  dscr_range | object | 7855 | 13  |
-|  dlq._status | object | 7855 | 7  |
-|  dlq_status_text | object | 7855 | 7  |
-|  fka_status_of_loan | object | 7855 | 7  |
-|  group_id | object | 7855 | 10  |
-|  int._only | object | 7855 | 3  |
-|  loan_amortization_type | object | 7855 | 9  |
-|  loan_id | int64 | 7855 | 7780  |
-|  ltv_range | object | 7855 | 8  |
-|  master_servicer | object | 7855 | 6  |
-|  maturity_date | object | 7855 | 228  |
-|  most_recentdscr_(ncf) | object | 7855 | 1682  |
-|  most_recent_financial_'as_of'_end_date_ | object | 7855 | 22  |
-|  most_recent_financial_'as_of'_start_date_ | object | 7855 | 24  |
-|  most_recentfinancial_indicator | object | 7855 | 7  |
-|  most_recentmaster_servicerreturn_date_ | object | 7855 | 8  |
-|  most_recent_ncf | object | 7855 | 5605  |
-|  most_recent_noi | object | 7855 | 5597  |
-|  most_recentphys_occup | object | 7855 | 80  |
-|  most_recentspecial_servicertransfer_date_ | object | 7855 | 9  |
-|  most_recent_value | object | 7855 | 2324  |
-|  mps_deal_alias | object | 7855 | 113  |
-|  msa | object | 7855 | 405  |
-|  no_time_dlq12mth | int64 | 7855 | 5  |
-|  no_time_dlqlife | int64 | 7855 | 11  |
-|  note_rate | object | 7855 | 582  |
-|  note_rate_range | object | 7855 | 13  |
-|  occupancy | float64 | 7855 | 9  |
-|  occupancy_date | object | 7855 | 503  |
-|  occupancy_range | object | 7855 | 7  |
-|  occupancy_source | object | 7855 | 4  |
-|  operatingtrust_advisor | object | 11 | 2  |
-|  orig_amortization | object | 7855 | 31  |
-|  orig_term | object | 7855 | 78  |
-|  original_note_amount | object | 7855 | 4241  |
-|  original_occupancy_date | object | 7855 | 1290  |
-|  original_occupancy__rate | float64 | 7855 | 788  |
-|  paid_thru_date | object | 7855 | 11  |
-|  payment_freq | object | 7855 | 2  |
-|  preceding_fiscalyear_financial_'as_of'_date_ | object | 7855 | 27  |
-|  preceding_fy_ncf | object | 7855 | 6205  |
-|  preceding_fiscalyear_noi | object | 7855 | 6201  |
-|  preceding_fy_dscr_(ncf) | object | 7855 | 1643  |
-|  property_name | object | 7855 | 7296  |
-|  property_subtype | object | 7855 | 43  |
-|  prospectus_id | int64 | 7855 | 155  |
-|  remaining_term | object | 7855 | 218  |
-|  seasoning | object | 7855 | 105  |
-|  seasoning_range | object | 7855 | 12  |
-|  second_preceding_fiscal_year_financial_'as_of'_date_ | object | 7855 | 23  |
-|  second_preceding_fy_ncf_(dscr) | object | 7855 | 1357  |
-|  second_preceding_fy_ncf | object | 7855 | 4070  |
-|  second_precedingfiscal_year_noi | object | 7855 | 4065  |
-|  servicer_watchlistcode | object | 7855 | 38  |
-|  special_servicer | object | 7855 | 17  |
-|  state | object | 7855 | 50  |
-|  total_reserve_bal | object | 7855 | 4499  |
-|  uw_dscr_(ncf)amortizing | float64 | 7855 | 686  |
-|  uw_ltv | object | 7855 | 569  |
-|  year_built | object | 7855 | 215  |
-|  zip_code | object | 7855 | 3599  |
-|  property_address | object | 7855 | 7582  |
-|  property_city | object | 7855 | 1861  |
-|  revenue_at_contribution | object | 7855 | 3926  |
-|  operating_expenses_at_contribution | object | 7855 | 4573  |
-|  noi_at_contribution | object | 7855 | 6250  |
-|  dscr_(noi)_at_contribution | object | 7855 | 1047  |
-|  ncf_at_contribution | object | 7855 | 5993  |
-|  dscr_(ncf)_at_contribution | object | 7855 | 496  |
-|  second_preceding_fy_revenue | object | 7855 | 4067  |
-|  second_preceding_fy_operating_exp | object | 7855 | 4067  |
-|  second_preceding_fy_debt_serv_amt | object | 7855 | 4061  |
-|  preceding_fy_revenue | object | 7855 | 6196  |
-|  preceding_fy_operating_exp | object | 7855 | 6210  |
-|  preceding_fy_debt_svc_amount | object | 7855 | 6202  |
-|  most_recent_revenue | object | 7855 | 5605  |
-|  most_recent_operating_expenses | object | 7855 | 5606  |
-|  most_recent_debt_service_amount | object | 7855 | 5604  |
+|  Column Name | Type | Non-null | Unique | Example  | Convert | Drop |
+|  :--- | :---: | :---: | :---: | :---  | :---: | :---: |
+|  #_properties | object | 7855 | 8 | 1  | int64 | Y |
+|  2nd_preceding_fydscr_(ncf) | object | 7855 | 1356 | -  | float64 | Y |
+|  actual_balance | object | 7855 | 6650 | $878,000,000  | float64 | N |
+|  balance_range | object | 7855 | 13 | 20.00+  | str -> get_dummies | N |
+|  balloon | object | 7855 | 2 | Y  | str -> get_dummies | Y |
+|  city | object | 7855 | 1771 | Los Angeles  | str | Y |
+|  current%_of_deal | float64 | 7855 | 147 | 100.0  | leave | Y |
+|  current_bal_rank | int64 | 7855 | 153 | 1  | leave | Y |
+|  current_endingsched_balance | object | 7855 | 6650 | $878,000,000  | float64 | Y |
+|  currentloan_balance | object | 7855 | 6650 | $878,000,000  | float64 | Y |
+|  cut-off_dateloan_balance | object | 7855 | 6007 | $878,000,000  | float64 | Y |
+|  date_added_to_servicer_watchlist_ | object | 7855 | 94 | -  | datetime | N |
+|  deal | object | 7855 | 113 | FREMF 2015-KPLB  | str -> get_dummies | N |
+|  distributiondate | object | 7855 | 1 | 01/25/2017  | datetime | Y |
+|  dscr_(ncf) | float64 | 7855 | 1765 | 2.74  | leave | N |
+|  dscr_range | object | 7855 | 13 | 2.00 and up  | str -> get_dummies | N |
+|  dlq._status | object | 7855 | 7 | Current  | str -> get_dummies | Y |
+|  dlq_status_text | object | 7855 | 7 | Current  | str -> get_dummies | N |
+|  fka_status_of_loan | object | 7855 | 7 | 0  | str -> get_dummies | N |
+|  group_id | object | 7855 | 10 | -  | str -> get_dummies | N |
+|  int._only | object | 7855 | 3 | Y  | str -> get_dummies | Y |
+|  loan_amortization_type | object | 7855 | 9 | Interest Only  | str -> get_dummies | N |
+|  loan_id | int64 | 7855 | 7780 | 708125468  | leave | N |
+|  ltv_range | object | 7855 | 8 | 50.0% - 55.0%  | str -> get_dummies | N |
+|  master_servicer | object | 7855 | 6 | Freddie Mac  | str -> get_dummies | N |
+|  maturity_date | object | 7855 | 228 | 05/01/2025  | datetime | Y |
+|  most_recentdscr_(ncf) | object | 7855 | 1682 | 2.740  | float64 | N |
+|  most_recent_financial_'as_of'_end_date_ | object | 7855 | 22 | 09/30/2016  | datetime | Y |
+|  most_recent_financial_'as_of'_start_date_ | object | 7855 | 24 | 01/01/2016  |  datetime | Y |
+|  most_recentfinancial_indicator | object | 7855 | 7 | Current  | str -> get_dummies | N |
+|  most_recentmaster_servicerreturn_date_ | object | 7855 | 8 | -  | datetime | N |
+|  most_recent_ncf | object | 7855 | 5605 | $61,193,871  | float64 | N |
+|  most_recent_noi | object | 7855 | 5597 | $61,830,621  | float64 | N |
+|  most_recentphys_occup | object | 7855 | 80 | 97.0  | float64 | N |
+|  most_recentspecial_servicertransfer_date_ | object | 7855 | 9 | -  | datetime | N |
+|  most_recent_value | object | 7855 | 2324 | $1,675,000,000  | float64 | N |
+|  mps_deal_alias | object | 7855 | 113 | 2015-KPLB  | str | N |
+|  msa | object | 7855 | 405 | Los Angeles-Long Beach-Santa Ana CA  | str -> get_dummies | N |
+|  no_time_dlq12mth | int64 | 7855 | 5 | 0  | str -> get_dummies | N |
+|  no_time_dlqlife | int64 | 7855 | 11 | 0  | str -> get_dummies | N |
+|  note_rate | object | 7855 | 582 | 3.3300  | float64 | N |
+|  note_rate_range | object | 7855 | 13 | 3.001% - 3.500%  | str -> get_dummies | N |
+|  occupancy | float64 | 7855 | 9 | 1.0  | leave | N |
+|  occupancy_date | object | 7855 | 503 | 09/30/2016  | datetime | Y |
+|  occupancy_range | object | 7855 | 7 | > 95.0%  | str -> get_dummies | N |
+|  occupancy_source | object | 7855 | 4 | MOST RECENT  | str | Y |
+|  operatingtrust_advisor | object | 11 | 2 | Freddie Mac  | str -> get_dummies | Y |
+|  orig_amortization | object | 7855 | 31 | 0  | int64 | N |
+|  orig_term | object | 7855 | 78 | 120  | int64 | N |
+|  original_note_amount | object | 7855 | 4241 | $878,000,000  | float64 | N |
+|  original_occupancy_date | object | 7855 | 1290 | 03/17/2015  | datetime | Y |
+|  original_occupancy__rate | float64 | 7855 | 788 | 97.7  | float64 | N |
+|  paid_thru_date | object | 7855 | 11 | 01/01/2017  | datetime | Y |
+|  payment_freq | object | 7855 | 2 | Monthly  | str -> drop | Y |
+|  preceding_fiscalyear_financial_'as_of'_date_ | object | 7855 | 27 | 12/31/2015  | datetime | Y |
+|  preceding_fy_ncf | object | 7855 | 6205 | $76,957,036  | float64 | Y |
+|  preceding_fiscalyear_noi | object | 7855 | 6201 | $77,806,036  | float64 | Y |
+|  preceding_fy_dscr_(ncf) | object | 7855 | 1643 | 2.600  | float64 | Y |
+|  property_name | object | 7855 | 7296 | Park La Brea Apartments  | str -> drop | Y |
+|  property_subtype | object | 7855 | 43 | Garden and High Rise  | str -> clean -> get_dummies | N |
+|  prospectus_id | int64 | 7855 | 155 | 1  | str -> drop | Y |
+|  remaining_term | object | 7855 | 218 | 100  | int64 | Y |
+|  seasoning | object | 7855 | 105 | 20  | int64 | Y |
+|  seasoning_range | object | 7855 | 12 | < 14  | str -> fix/drop | Y |
+|  second_preceding_fiscal_year_financial_'as_of'_date_ | object | 7855 | 23 | -  | datetime | Y |
+|  second_preceding_fy_ncf_(dscr) | object | 7855 | 1357 | -  | float64 | Y |
+|  second_preceding_fy_ncf | object | 7855 | 4070 | $0  | float64 | Y |
+|  second_precedingfiscal_year_noi | object | 7855 | 4065 | $0  | float64 | Y |
+|  servicer_watchlistcode | object | 7855 | 38 | -  | str -> investigate | Y |
+|  special_servicer | object | 7855 | 17 | Berkeley Point Capital, LLC  | str -> get_dummies | N |
+|  state | object | 7855 | 50 | CA  | str -> get_dummies | N |
+|  total_reserve_bal | object | 7855 | 4499 | 0  | float64 | Y |
+|  uw_dscr_(ncf)amortizing | float64 | 7855 | 686 | 2.27  | float64 | N |
+|  uw_ltv | object | 7855 | 569 |  52.4%  | float64 | N |
+|  year_built | object | 7855 | 215 | 1944 - 1951  | str -> clean -> get_dummies | N |
+|  zip_code | object | 7855 | 3599 | 90036  | str -> clean | Y |
+|  property_address | object | 7855 | 7582 | 6200 West Third Street  | str -> drop | Y |
+|  property_city | object | 7855 | 1861 | Los Angeles  | str -> drop | Y |
+|  revenue_at_contribution | object | 7855 | 3926 | 105197374  | float64 | Y |
+|  operating_expenses_at_contribution | object | 7855 | 4573 | 37126374  | float64 | Y |
+|  noi_at_contribution | object | 7855 | 6250 | 68071000  | float64 | Y |
+|  dscr_(noi)_at_contribution | object | 7855 | 1047 | -  | float64 | Y |
+|  ncf_at_contribution | object | 7855 | 5993 | 67222000  | float64 | Y |
+|  dscr_(ncf)_at_contribution | object | 7855 | 496 | 2.27  | float64 | Y |
+|  second_preceding_fy_revenue | object | 7855 | 4067 | 0  | float64 | Y |
+|  second_preceding_fy_operating_exp | object | 7855 | 4067 | 0  | float64 | Y |
+|  second_preceding_fy_debt_serv_amt | object | 7855 | 4061 | -  | float64 | Y |
+|  preceding_fy_revenue | object | 7855 | 6196 | 108541632.46  | float64 | Y |
+|  preceding_fy_operating_exp | object | 7855 | 6210 | 30735596.87  | float64 | Y |
+|  preceding_fy_debt_svc_amount | object | 7855 | 6202 | 29643475  | float64 | Y |
+|  most_recent_revenue | object | 7855 | 5605 | 85254239.66  | float64 | Y |
+|  most_recent_operating_expenses | object | 7855 | 5606 | 23423618.25  | float64 | Y |
+|  most_recent_debt_service_amount | object | 7855 | 5604 | 22334125  | float | Y |
