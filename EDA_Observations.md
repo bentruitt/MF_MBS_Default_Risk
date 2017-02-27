@@ -52,7 +52,7 @@ Pros - This dataset is well compiled and would require little data cleaning and 
 
 Cons - This is a subset of the overall Freddie Mac multifamily loans issued and may not be representative of the typical loan funded by Freddie Mac and sold to investors. These are only the loans of which Freddie Mac has retained ownership. There could be a variety of reasons that they would have retained ownership of these loans. These loans could be for types of properties that are not easily bundled with other properties for securitization. This could apply to senior housing properties with some level of care (i.e. assisted living, nursing homes, memory care, etc.). This could also apply to affordable housing projects with complex capital structures and mechanisms that would potentially deter the secondary capital markets from investing in their securities. A few examples of some characteristics that could deter capital markets would be rent restrictions, phasing off tax abatements, land leases, or rent subsidies from entities with low credit ratings, such as, a bankrupt county or city. I would Freddie Mac not cherry pick these loans to inflate their performance data. The federal government did take control of both Freddie Mac and Fannie Mae following the financial crisis due in part to questionable lending practices.
 
-## Multifamily Securitization Program Data
+## Multifamily Securitization Program Data (MSPD)
 **Data Source: ** [Freddie Mac Investor Access](https://msia.ficonsulting.com/)
 
 The complete data set as of 2/22/2017 is in: 'data/custom_rpt_all_properties_20170222.csv'
@@ -79,11 +79,7 @@ Freddie Mac issues securities in 12 deal types:
 1 As of September 30, 2016                                                  
 2 Excludes Q-Deals
 
-**Pros / Cons:**
-
-Pros - This dataset covers all securitized loans. It appears to include not just active, but previously foreclosed loans as well.
-
-Cons - This data does not contain quarterly time-series data for each property, but does contain the property financial performance data at origination (loan creation), most recent of quarter, most recent end-of-year, and previous year end-of year data. This covers about three years of a loan's term. The longest allowable loan term is 10 years and most get refinanced prior to the maturity date or have existence for significantly less that 10 years, so covering 3 years of the term should give an indication of changes in performance.
+The data available for the securitized loans is as follows:
 
 |  Column Name | Type | Non-null | Unique | Example  | Convert | Drop |
 |  :--- | :---: | :---: | :---: | :---  | :---: | :---: |
@@ -180,3 +176,26 @@ Cons - This data does not contain quarterly time-series data for each property, 
 |  most_recent_revenue | object | 7855 | 5605 | 85254239.66  | float64 | Y |
 |  most_recent_operating_expenses | object | 7855 | 5606 | 23423618.25  | float64 | Y |
 |  most_recent_debt_service_amount | object | 7855 | 5604 | 22334125  | float | Y |
+
+**Pros / Cons:**
+
+Pros - This dataset covers all securitized loans. It appears to include not just active, but previously foreclosed loans as well.
+
+Cons - This data does not contain quarterly time-series data for each property, but does contain the property financial performance data at origination (loan creation), most recent of quarter, most recent end-of-year, and previous year end-of year data. This covers about three years of a loan's term. The longest allowable loan term is 10 years and most get refinanced prior to the maturity date or have existence for significantly less that 10 years, so covering 3 years of the term should give an indication of changes in performance.
+
+## Dataset for Analysis
+
+Data will be extracted from both multifamily loan datasets (MFLP and MSPD). Common columns will be combined into one larger dataset. One main benefit to this is increasing the data set to the combined set of 19,425 mortgages (7,855 securitized and 11,570 Freddie held mortgages).
+
+The features that will be used are:
+
+| Column Name     | MFLP Column Name | MSPD Column Name |
+| -----------     | ---------------- | ---------------- |
+| loan_id         | lnno             | loan_id          |
+| loan_status*    | mrtg_status      | dlq_status_text  |
+| current_balance | amt_upb_endg     | actual_balance   |
+| property_state  | code_st          | state            |
+| int_rate        | rate_int         | note_rate        |
+| dsc_ratio       | rate_dcr         | dscr_(ncf)       |
+
+** * label derived from

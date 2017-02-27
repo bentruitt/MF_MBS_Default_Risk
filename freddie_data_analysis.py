@@ -118,31 +118,28 @@ def clean_df_data(df):
 if __name__ == '__main__':
     datadir = 'data/'
 
-    ### Open Multifamily Loan Performance Data
-    # mlpd_file = 'mlpd_datamart_1q16.txt'
-    # open_data = str(raw_input('Would you like to open ' + mlpd_file + '? [y/n]'))
-    # if open_data == 'y':
-    #     df_pd = read_data_pandas(datadir + mlpd_file, sep='|')
-
-    ### Open Multifamily Securitization Program Data
-    open_data = str(raw_input('Would you like to open the investor data? [y/n]'))
+    ### open data nd import into pandas dataframes
+    open_data = str(raw_input('Would you like to open the data? [y/n]'))
     if open_data == 'y':
-        all_loans_file = 'custom_rpt_all_properties_20170222.csv'
-        #df_all = read_data_csv(datadir + all_loans_file)
-        df_all = read_data_pandas(datadir + all_loans_file)
+        mflp_file = 'mlpd_datamart_1q16.txt'
+        mspd_file = 'custom_rpt_all_properties_20170222.csv'
+        ## Open Multifamily Loan Performance Data
+        df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
+        # Open Multifamily Securitization Program Data
+        df_mspd = read_data_pandas(datadir + mspd_file)
 
     ### Print table for md file
-    #print_df_md_table(df_pd)
-    # print_df_md_table(df_all)
+    #print_df_md_table(df_mflp)
+    # print_df_md_table(df_mspd)
 
     ### Clean DataFrame data
-    df_all = clean_df_data(df_all)
+    df_mspd = clean_df_data(df_mspd)
 
-    df_mdl = drop_cols(df_all)
+    #df_mdl = drop_cols(df_all)
 
     plot_hists = str(raw_input('Would you like to plot a histogram for each column? [y/n]'))
 
     hist_columns = ['balance_range', 'dscr_range', 'dlq_status_text', 'fka_status_of_loan', 'group_id', 'loan_amortization_type', 'ltv_range', 'master_servicer', 'most_recentfinancial_indicator', 'most_recentphys_occup', 'no_time_dlq12mth', 'no_time_dlqlife', 'note_rate_range', 'occupancy_range', 'property_subtype', 'special_servicer', 'state']
 
     if plot_hists == 'y':
-        plot_histograms(df_mdl, hist_columns, name = 'Histogram of Freddie Columns')
+        plot_histograms(df_mspd, hist_columns, name = 'Histogram of Freddie Columns')
