@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
-import datetime
+from datetime import datetime, timedelta
+from calendar import monthrange
 import csv
 import pdb
 
@@ -29,12 +30,52 @@ def read_data_csv(filename):
     return df
 
 ### Process Columns
-def drop_cols(df):
-    drop_columns = ['#_properties', '2nd_preceding_fydscr_(ncf)', 'balloon', 'city', 'current%_of_deal', 'current_bal_rank', 'current_endingsched_balance', 'currentloan_balance', 'cut-off_dateloan_balance', 'distributiondate', 'dlq._status', 'int._only', 'maturity_date', "most_recent_financial_'as_of'_end_date_", "most_recent_financial_'as_of'_start_date_", 'occupancy_date', 'occupancy_source', 'operatingtrust_advisor', 'original_occupancy_date', 'paid_thru_date', 'payment_freq', "preceding_fiscalyear_financial_'as_of'_date_", 'preceding_fy_ncf', 'preceding_fiscalyear_noi', 'preceding_fy_dscr_(ncf)', 'property_name', 'prospectus_id', 'remaining_term', 'seasoning', 'seasoning_range', "second_preceding_fiscal_year_financial_'as_of'_date_", 'second_preceding_fy_ncf_(dscr)', 'second_preceding_fy_ncf', 'second_precedingfiscal_year_noi', 'servicer_watchlistcode', 'total_reserve_bal', 'zip_code', 'property_address', 'property_city', 'revenue_at_contribution', 'operating_expenses_at_contribution', 'noi_at_contribution', 'dscr_(noi)_at_contribution', 'ncf_at_contribution', 'dscr_(ncf)_at_contribution', 'second_preceding_fy_revenue', 'second_preceding_fy_operating_exp', 'second_preceding_fy_debt_serv_amt', 'preceding_fy_revenue', 'preceding_fy_operating_exp', 'preceding_fy_debt_svc_amount', 'most_recent_revenue', 'most_recent_operating_expenses', 'most_recent_debt_service_amount']
+def map_dfs(df_mflp, df_mspd, df_map):
+    map_cols, mflp_cols, mspd_cols = df_map.columns.tolist()
 
-    df.drop(labels=drop_columns, axis=1, inplace=True)
+    df_mflp = df_mflp[df_map[mflp_cols]]
 
-    return df
+    df_mspd = df_mspd[df_map[mspd_cols]]
+
+    # Map df_mspd dlq_status_text column to corresponding values in df_MFLP
+    dlq_status_text_map = {
+    'Current':100,
+    '90+':200,
+    '< 30 ':100,
+    'Grace':100,
+    'Perf Balloon':100,
+    '-':500, '60-89':200}
+    dlq_status_text_list = df_mspd['dlq_status_text'].tolist()
+    df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in dlq_status_text_list]
+
+    # Map df_mspd note_rate to be 0.0xxx format instead of x.xx% format
+    df_mspd['note_rate'] = df_mspd['note_rate']/100.
+
+    # Convert df_mflp quarter column to date
+    eoqs = []
+    this_year = datetime.today().year - 2000
+    for eoq in df_mflp['quarter'].tolist():
+        eoq_yr = 1900+int(int(eoq[1:3])<=this_year)*100+int(eoq[1:3])
+        eoq_mo = int(eoq[-1])*3
+        eoq_day = monthrange(eoq_yr, eoq_mo)[1]
+        eoqs.append(str(eoq_mo) + '/' + str(eoq_day) + '/' + str(eoq_yr))
+    df_mflp['quarter'] = pd.to_datetime(np.array(eoqs), errors='coerce')
+
+    # Filter df_mspd to only newest entries
+    max_qt_series = df_mflp.groupby('lnno', as_index=False)['quarter'].transform('max')
+    df_mflp['max_qtr'] = max_qt_series
+    df_mflp = df_mflp[df_mflp['quarter'] == df_mflp['max_qtr']]
+
+    # pdb.set_trace()
+
+    df_mflp.drop(['max_qtr'], inplace=True, axis=1)
+
+    df_mflp.columns = df_map[map_cols]
+    df_mspd.columns = df_map[map_cols]
+
+    df_comb = pd.concat([df_mflp, df_mspd])
+
+    return df_comb
 
 ### Plot histograms for data columns
 def plot_histograms(df, columns, name='test', plotdir='plots/'):
@@ -119,27 +160,50 @@ if __name__ == '__main__':
     datadir = 'data/'
 
     ### open data nd import into pandas dataframes
-    open_data = str(raw_input('Would you like to open the data? [y/n]'))
-    if open_data == 'y':
+    refresh_data = str(raw_input('Would you like to refresh the data? [y/n]'))
+    if refresh_data == 'y':
         mflp_file = 'mlpd_datamart_1q16.txt'
         mspd_file = 'custom_rpt_all_properties_20170222.csv'
         ## Open Multifamily Loan Performance Data
         df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
-        # Open Multifamily Securitization Program Data
+        ## Open Multifamily Securitization Program Data
         df_mspd = read_data_pandas(datadir + mspd_file)
+        # Clean DataFrame data
+        df_mspd = clean_df_data(df_mspd)
+
+        col_map_a = [
+        ['loan_id', 'lnno','loan_id'],
+        ['loan_status', 'mrtg_status', 'dlq_status_text'],
+        ['published_date', 'quarter', 'distributiondate'],
+        ['current_balance', 'amt_upb_endg', 'actual_balance'],
+        ['original_balance', 'amt_upb_pch', 'original_note_amount'],
+        ['property_state', 'code_st', 'state'],
+        ['int_rate', 'rate_int', 'note_rate'],
+        ['dsc_ratio', 'rate_dcr', 'dscr_(ncf)']]
+
+        df_map = pd.DataFrame(data=col_map_a, columns=['col_a', 'mflp_col', 'mspd_col'], index=np.arange(len(col_map_a)))
+
+        df_comb = map_dfs(df_mflp, df_mspd, df_map)
+        df_comb.to_csv(datadir + 'df_comb' + '.csv')
+
+
+    else:
+        df_comb = pd.read_csv(datadir + 'df_comb' + '.csv')
+
+    df_comb['label'] = df_comb['loan_status'].isin([200,300,450])
+    df_comb.drop(['loan_status'], inplace=True, axis=1)
+
+    
 
     ### Print table for md file
     #print_df_md_table(df_mflp)
     # print_df_md_table(df_mspd)
 
-    ### Clean DataFrame data
-    df_mspd = clean_df_data(df_mspd)
-
     #df_mdl = drop_cols(df_all)
 
-    plot_hists = str(raw_input('Would you like to plot a histogram for each column? [y/n]'))
+    # plot_hists = str(raw_input('Would you like to plot a histogram for each column? [y/n]'))
+    #
+    # hist_columns = ['balance_range', 'dscr_range', 'dlq_status_text', 'fka_status_of_loan', 'group_id', 'loan_amortization_type', 'ltv_range', 'master_servicer', 'most_recentfinancial_indicator', 'most_recentphys_occup', 'no_time_dlq12mth', 'no_time_dlqlife', 'note_rate_range', 'occupancy_range', 'property_subtype', 'special_servicer', 'state']
 
-    hist_columns = ['balance_range', 'dscr_range', 'dlq_status_text', 'fka_status_of_loan', 'group_id', 'loan_amortization_type', 'ltv_range', 'master_servicer', 'most_recentfinancial_indicator', 'most_recentphys_occup', 'no_time_dlq12mth', 'no_time_dlqlife', 'note_rate_range', 'occupancy_range', 'property_subtype', 'special_servicer', 'state']
-
-    if plot_hists == 'y':
-        plot_histograms(df_mspd, hist_columns, name = 'Histogram of Freddie Columns')
+    # if plot_hists == 'y':
+    #     plot_histograms(df_mspd, hist_columns, name = 'Histogram of Freddie Columns')

@@ -199,3 +199,13 @@ The features that will be used are:
 | dsc_ratio       | rate_dcr         | dscr_(ncf)       |
 
 ** * label derived from
+
+**Mapping functions:
+dlq_status_text_map = {
+  'Current':100,
+  '90+':200,
+  '< 30 ':100,
+  'Grace':100,
+  'Perf Balloon':100,
+  '-':500, '60-89':200}
+df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in df_mspd['dlq_status_text']]
