@@ -194,13 +194,14 @@ The features that will be used are:
 | loan_id         | lnno             | loan_id          |
 | loan_status*    | mrtg_status      | dlq_status_text  |
 | current_balance | amt_upb_endg     | actual_balance   |
+| original_balance | amt_upb_pch      | original_note_amount |
 | property_state  | code_st          | state            |
 | int_rate        | rate_int         | note_rate        |
 | dsc_ratio       | rate_dcr         | dscr_(ncf)       |
 
 ** * label derived from
 
-**Mapping functions:
+**Mapping functions:**
 dlq_status_text_map = {
   'Current':100,
   '90+':200,
@@ -208,4 +209,5 @@ dlq_status_text_map = {
   'Grace':100,
   'Perf Balloon':100,
   '-':500, '60-89':200}
-df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in df_mspd['dlq_status_text']]
+df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in df_mspd['dlq_status_text']]  
+** * Any values with a 500 were reverted to the highest previous value

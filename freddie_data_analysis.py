@@ -5,7 +5,7 @@ from collections import Counter
 from datetime import datetime, timedelta
 from calendar import monthrange
 import csv
-import pdb
+from pdb import set_trace
 
 ### Read in data and cleanup column headings
 def read_data_pandas(filename, sep=','):
@@ -45,6 +45,7 @@ def map_dfs(df_mflp, df_mspd, df_map):
     'Grace':100,
     'Perf Balloon':100,
     '-':500, '60-89':200}
+
     dlq_status_text_list = df_mspd['dlq_status_text'].tolist()
     df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in dlq_status_text_list]
 
@@ -60,20 +61,32 @@ def map_dfs(df_mflp, df_mspd, df_map):
         eoq_day = monthrange(eoq_yr, eoq_mo)[1]
         eoqs.append(str(eoq_mo) + '/' + str(eoq_day) + '/' + str(eoq_yr))
     df_mflp['quarter'] = pd.to_datetime(np.array(eoqs), errors='coerce')
+    # set_trace()
+    # Get dataframe of delinquency status
+    df_mflp_dlq = df_mflp.loc[:,['lnno', 'mrtg_status']]
 
-    # Filter df_mspd to only newest entries
+    # Filter df_mflp to only newest entries
     max_qt_series = df_mflp.groupby('lnno', as_index=False)['quarter'].transform('max')
     df_mflp['max_qtr'] = max_qt_series
     df_mflp = df_mflp[df_mflp['quarter'] == df_mflp['max_qtr']]
 
-    # pdb.set_trace()
+    # Assign mrtg status to highest level prior to 500
+    new_mrtg_status = []
+    for ln_id in df_mflp['lnno'].tolist():
+        dlq_status_arr = df_mflp_dlq[df_mflp_dlq['lnno'] == ln_id]['mrtg_status'].unique()
+        if len(dlq_status_arr) > 1:
+            dlq_status_arr = np.delete(dlq_status_arr, np.where(dlq_status_arr==500))
+        new_mrtg_status.append(dlq_status_arr.max())
+    df_mflp['mrtg_status'] = np.array(new_mrtg_status)
 
     df_mflp.drop(['max_qtr'], inplace=True, axis=1)
 
     df_mflp.columns = df_map[map_cols]
+    df_mflp['published_date'] = pd.to_datetime(df_mflp['published_date'], errors='coerce')
     df_mspd.columns = df_map[map_cols]
-
+    df_mspd['published_date'] = pd.to_datetime(df_mspd['published_date'], errors='coerce')
     df_comb = pd.concat([df_mflp, df_mspd])
+    df_comb.set_index(np.arange(df_comb.shape[0]), drop=True, inplace=True)
 
     return df_comb
 
@@ -92,13 +105,10 @@ def plot_histograms(df, columns, name='test', plotdir='plots/'):
         column_list = [x for x in df[col]]
         labels, values = zip(*Counter(column_list).items())
         indexes = np.arange(len(labels))
-        try:
-            if type(labels[0]) == str:
-                idx = np.argsort(values)
-            else:
-                idx = np.argsort(labels)
-        except:
-            pdb.set_trace()
+        if type(labels[0]) == str:
+            idx = np.argsort(values)
+        else:
+            idx = np.argsort(labels)
         labels = [labels[x] for x in idx]
         values = [values[x] for x in idx]
         width = 1
@@ -114,7 +124,7 @@ def plot_histograms(df, columns, name='test', plotdir='plots/'):
 ### print table for markdown file
 def print_df_md_table(df):
     headings = [('Column Name',':---'), ('Type',':---:'), ('Non-null',':---:'), ('Unique',':---:'), ('Example',':---')]
-    # pdb.set_trace()
+    # set_trace()
     keys = [x[0] for x in headings]
     values = [x[1] for x in headings]
     print '| ', ' | '.join(keys), ' |'
@@ -149,7 +159,7 @@ def clean_df_data(df):
         except:
             temp_col = np.sort(df[col].iloc[:500])[::-1]
             try:
-                # pdb.set_trace()
+                # set_trace()
                 temp_date = datetime.datetime.strptime(temp_col[0], '%m/%d/%Y')
                 df[col] = pd.to_datetime(df[col], errors='coerce')
             except:
@@ -166,6 +176,8 @@ if __name__ == '__main__':
         mspd_file = 'custom_rpt_all_properties_20170222.csv'
         ## Open Multifamily Loan Performance Data
         df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
+        # Clean DataFrame data
+        df_mflp = clean_df_data(df_mflp)
         ## Open Multifamily Securitization Program Data
         df_mspd = read_data_pandas(datadir + mspd_file)
         # Clean DataFrame data
@@ -190,10 +202,11 @@ if __name__ == '__main__':
     else:
         df_comb = pd.read_csv(datadir + 'df_comb' + '.csv')
 
-    df_comb['label'] = df_comb['loan_status'].isin([200,300,450])
+    df_comb['label'] = df_comb['loan_status'].isin([200,300,450]).astype(int)
     df_comb.drop(['loan_status'], inplace=True, axis=1)
+    df_comb.to_csv(datadir + 'df_labeled' + '.csv')
 
-    
+
 
     ### Print table for md file
     #print_df_md_table(df_mflp)
