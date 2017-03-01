@@ -2,15 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 from scipy import interp
-from sklearn.cross_validation import KFold
+from sklearn.cross_validation import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
-import pdb
+from pdb import set_trace
+import random
+
+random.seed(1234)
 
 
-def plot_roc(X, y, trial, clf_class, **kwargs):
+def plot_roc(X, y, plot_dir, trial, clf_class, **kwargs):
+    # set_trace()
     scaler = StandardScaler()
     X = scaler.fit_transform(X)
-    kf = KFold(len(y), n_folds=5, shuffle=True)
+    kf = StratifiedKFold(y, n_folds=5, shuffle=True)
     y_prob = np.zeros((len(y),2))
     mean_tpr = 0.0
     mean_fpr = np.linspace(0, 1, 100)
@@ -22,7 +26,11 @@ def plot_roc(X, y, trial, clf_class, **kwargs):
         clf.fit(X_train,y_train)
         # Predict probabilities, not classes
         #pdb.set_trace()
-        y_prob[test_index] = clf.predict_proba(X_test)
+        try:
+            y_prob[test_index] = clf.predict_proba(X_test)
+        except:
+            print "No true-positives calculated / No probability for ", clf_class
+            return
         fpr, tpr, thresholds = roc_curve(y[test_index], y_prob[test_index, 1])
         mean_tpr += interp(mean_fpr, fpr, tpr)
         mean_tpr[0] = 0.0
@@ -43,5 +51,5 @@ def plot_roc(X, y, trial, clf_class, **kwargs):
     plt.title('ROC plot for ' + model_nm)
     plt.legend(loc="lower right")
     plt.tight_layout()
-    plt.savefig('ROC_plot_' + model_nm + trial + '.png')
+    plt.savefig(plot_dir + 'ROC_plot_' + model_nm + trial + '.png')
     plt.close()

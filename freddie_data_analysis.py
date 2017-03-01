@@ -44,7 +44,7 @@ def map_dfs(df_mflp, df_mspd, df_map):
     '< 30 ':100,
     'Grace':100,
     'Perf Balloon':100,
-    '-':500, '60-89':200}
+    '-':100, '60-89':200}
 
     dlq_status_text_list = df_mspd['dlq_status_text'].tolist()
     df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in dlq_status_text_list]
@@ -70,7 +70,7 @@ def map_dfs(df_mflp, df_mspd, df_map):
     df_mflp['max_qtr'] = max_qt_series
     df_mflp = df_mflp[df_mflp['quarter'] == df_mflp['max_qtr']]
 
-    # Assign mrtg status to highest level prior to 500
+    # Assign mrtg status in df_mflp to highest level prior to 500
     new_mrtg_status = []
     for ln_id in df_mflp['lnno'].tolist():
         dlq_status_arr = df_mflp_dlq[df_mflp_dlq['lnno'] == ln_id]['mrtg_status'].unique()
@@ -83,8 +83,11 @@ def map_dfs(df_mflp, df_mspd, df_map):
 
     df_mflp.columns = df_map[map_cols]
     df_mflp['published_date'] = pd.to_datetime(df_mflp['published_date'], errors='coerce')
+    df_mflp['freddie_held'] = 1.0
     df_mspd.columns = df_map[map_cols]
     df_mspd['published_date'] = pd.to_datetime(df_mspd['published_date'], errors='coerce')
+    df_mspd['freddie_held'] = 0.0
+
     df_comb = pd.concat([df_mflp, df_mspd])
     df_comb.set_index(np.arange(df_comb.shape[0]), drop=True, inplace=True)
 
@@ -136,7 +139,7 @@ def print_df_md_table(df):
         row.append(str(df[col].iloc[0]))
         print '| ', ' | '.join(row), ' |'
 
-def clean_df_data(df):
+def clean_mspd_data(df):
     columns = df.columns.tolist()
     for col in columns:
         # set default variable default values
@@ -164,6 +167,9 @@ def clean_df_data(df):
                 df[col] = pd.to_datetime(df[col], errors='coerce')
             except:
                 df[col] = df[col].astype(str)
+        ltv_col = df['uw_ltv'].replace('[%]','', regex=True)
+        ltv_col = ltv_col.astype(float)/100.
+        df['uw_ltv'] = ltv_col
     return df
 
 if __name__ == '__main__':
@@ -177,11 +183,12 @@ if __name__ == '__main__':
         ## Open Multifamily Loan Performance Data
         df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
         # Clean DataFrame data
-        df_mflp = clean_df_data(df_mflp)
+        # df_mflp = clean_df_data(df_mflp)
         ## Open Multifamily Securitization Program Data
         df_mspd = read_data_pandas(datadir + mspd_file)
         # Clean DataFrame data
-        df_mspd = clean_df_data(df_mspd)
+        df_mspd = clean_mspd_data(df_mspd)
+        prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
 
         col_map_a = [
         ['loan_id', 'lnno','loan_id'],
@@ -190,8 +197,9 @@ if __name__ == '__main__':
         ['current_balance', 'amt_upb_endg', 'actual_balance'],
         ['original_balance', 'amt_upb_pch', 'original_note_amount'],
         ['property_state', 'code_st', 'state'],
-        ['int_rate', 'rate_int', 'note_rate'],
-        ['dsc_ratio', 'rate_dcr', 'dscr_(ncf)']]
+        ['o_int_rate', 'rate_int', 'note_rate'],
+        ['o_dsc_ratio', 'rate_dcr', 'dscr_(ncf)'],
+        ['o_ltv_ratio', 'rate_ltv', 'uw_ltv']]
 
         df_map = pd.DataFrame(data=col_map_a, columns=['col_a', 'mflp_col', 'mspd_col'], index=np.arange(len(col_map_a)))
 
@@ -202,11 +210,13 @@ if __name__ == '__main__':
     else:
         df_comb = pd.read_csv(datadir + 'df_comb' + '.csv')
 
-    df_comb['label'] = df_comb['loan_status'].isin([200,300,450]).astype(int)
-    df_comb.drop(['loan_status'], inplace=True, axis=1)
+    df_comb['principal_paydown'] = df_comb['original_balance'] - df_comb['current_balance']
+
+    # define label to be loans beyond 60 days late and any that have defaulted in the past
+    df_comb['label'] = [float(x) for x in ((df_comb['loan_status'].isin([200,300,450])) | ((df_comb['freddie_held']==0) & (df_comb['loan_id'].isin(prob_loan_ids))))]
+
+    df_comb.drop(['loan_id', 'loan_status'], inplace=True, axis=1)
     df_comb.to_csv(datadir + 'df_labeled' + '.csv')
-
-
 
     ### Print table for md file
     #print_df_md_table(df_mflp)
