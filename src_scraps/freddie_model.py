@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     #*** Select sklearn model to build
     model_name = GradientBoostingClassifier
-    model = model_name() #class_weight='balanced' 
+    model = model_name() #class_weight='balanced'
     model_nm = str(model_name).split('.')[-1:][0].split("'")[0]
     model.fit(X_train, y_train)
 
