@@ -15,10 +15,11 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC, LinearSVC
 from sklearn.tree import DecisionTreeClassifier
+from datetime import datetime
 
 random.seed(1234)
 
-#*** Run random forest in comparison to logistic regression, decision tree, SVM, and #Naive Bayes
+### Run random forest in comparison to logistic regression, decision tree, SVM, and #Naive Bayes
 def get_scores(classifier, X_train, X_test, y_train, y_test, **kwargs):
     model = classifier(**kwargs)
     model.fit(X_train, y_train)
@@ -27,10 +28,10 @@ def get_scores(classifier, X_train, X_test, y_train, y_test, **kwargs):
            precision_score(y_test, y_predict), \
            recall_score(y_test, y_predict)
 
-#*** Load data that was prepared by freddie_data_analysis module
-def load_data(file):
+### Load data that was prepared by freddie_data_analysis module
+def load_data(in_file):
     # read csv file prepared by freddie_data_analysis module
-    df = pd.read_csv(file)
+    df = pd.read_csv(in_file)
     # drop unneeded columns
     columns = df.columns.tolist()
     for col in columns:
@@ -134,7 +135,7 @@ def feature_importance():
     # plt.savefig(plot_dir + "feature_importances" + trial + ".png")
     # plt.close()
     #
-    # ##*** Plot histograms of data for top 5 features
+    # #### Plot histograms of data for top 5 features
     # ##
     # nm_feat = 5
     # plt.figure()
@@ -143,51 +144,55 @@ def feature_importance():
     # plt.savefig(plot_dir + "case_histograms" + trial + ".png")
     pass
 
-def grid_search(X_train, X_test, y_train, y_test, cv, estimator, tuned_parameters):
+def grid_search(X_train, X_test, y_train, y_test, cv, estimator, tuned_parameters, print_file):
     # Set the parameters by cross-validation
-    scores = ['precision_macro', 'recall_macro', 'f1_weighted', 'f1']
+    scores = ['f1'] #'precision_macro', 'recall_macro', 'f1_weighted',
+    model_nm = str(estimator).split('.')[-1:][0].split("'")[0]
 
+    print_file.write("\n####--------------------%s Grid Search----------#####\n" % model_nm)
     for score in scores:
-        clf = GridSearchCV(estimator(), tuned_parameters, cv=cv, scoring=score)
+        clf = GridSearchCV(estimator(), tuned_parameters, n_jobs=8, cv=cv, scoring=score)
         clf.fit(X_train, y_train)
 
-        print "\n### Tuning hyper-parameters for %s" % score
+        print_file.write("\n### Tuning hyper-parameters for %s" % score)
 
-        print "Best parameters set found on development set:"
-        print clf.best_params_
+        print_file.write("\nBest parameters set found on development set for %s: " % model_nm)
+        print_file.write("%s" % clf.best_params_)
 
-        print "\nGrid scores on development set:"
+        print_file.write("\nGrid scores on development set:")
         means = clf.cv_results_['mean_test_score']
         stds = clf.cv_results_['std_test_score']
         for mean, std, params in zip(means, stds, clf.cv_results_['params']):
-            print("%0.3f (+/-%0.03f) for %r"
+            print_file.write("\n%0.3f (+/-%0.03f) for %r"
                   % (mean, std * 2, params))
 
-        print "\nDetailed classification report:"
-        print "\nThe model is trained on the full development set."
-        print "The scores are computed on the full evaluation set.\n"
+        print_file.write("\nDetailed classification report: for %s, %s" % (model_nm, score))
+        print_file.write("\nThe model is trained on the full development set.")
+        print_file.write("\nThe scores are computed on the full evaluation set.\n")
 
         y_true, y_pred = y_test, clf.predict(X_test)
-        print classification_report(y_true, y_pred)
-        print "\n-----------------------------------------------------------\n"
+        print_file.write(classification_report(y_true, y_pred))
+        print_file.write("\n-----------------------------------------------------------\n")
 
 if __name__ == '__main__':
 
     plot_dir = 'plots/'
     trial = '_final1'
     datadir = 'data/'
+    start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
+    print_file = open("output/" + "lr_gb_dt_" + start_time + ".txt", "w")
 
-    #*** Load the dataset in with pandas and refine columns
+    ### Load the dataset in with pandas and refine columns
     df = load_data(datadir + 'df_labeled' + '.csv')
 
     ### Seperate labels and feature data
-    #*** Make a numpy array called y containing the default labels
+    ### Make a numpy array called y containing the default labels
     y = df.pop('label').values
-    #*** Make a 2 dimensional numpy array containing the feature data (everything except #the labels)
+    ### Make a 2 dimensional numpy array containing the feature data (everything except #the labels)
     X = df.values
 
-    #*** Use sklearn's train_test_split to split into train and test set
-    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y) #strat_kfold_split(X, y) #
+    ### Use sklearn's train_test_split to split into train and test set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
     orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
 
     ### Create StratifiedKFold generator
@@ -195,31 +200,36 @@ if __name__ == '__main__':
     X_t = scaler.fit_transform(X)
     cv = StratifiedKFold(y, n_folds=5, shuffle=True)
 
-    #*** Build LogisticRegression model
-    # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
-    lr = LogisticRegression(penalty='l1', class_weight='balanced')
-    lr.fit(X_train, y_train)
+    run_grid_search = bool(raw_input("Run GridSearchCV?[y/n]"))
 
-    tuned_parameters = [{
-    'penalty': ['l1'],
-    'C': [1., 10., 100., 1000.],
-    'class_weight': ['balanced', None]
-    }, {
-    'penalty': ['l2'],
-    'solver': ['newton-cg', 'sag', 'lbfgs', 'liblinear'],
-    'C': [1., 10., 100., 1000.],
-    'class_weight': ['balanced', None]
-    }, {
-    'penalty': ['l2'],
-    'solver': ['liblinear'],
-    'dual': [True],
-    'C': [1., 10., 100., 1000.],
-    'class_weight': ['balanced', None]
+    ### Build LogisticRegression model
+    # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
+    if run_grid_search:
+        tuned_parameters = [{
+        'penalty': ['l1'],
+        'C': [1., 2500., 5000., 7500., 10000.],
+        'class_weight': ['balanced']
+        }, {
+        'penalty': ['l2'],
+        'solver': ['newton-cg'],
+        'C': [1., 10., 100., 1000., 2000.],
+        'class_weight': ['balanced']
+        }]
+
+        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters, print_file=print_file)
+
+    best_parameters = [{
+    'penalty': 'l2',
+    'C': 2000.0,
+    'solver': 'newton-cg',
+    'class_weight': 'balanced'
     }]
 
-    grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters)
+    lr = LogisticRegression(penalty='l2', C=2000.0, solver='newton-cg', class_weight='balanced')
+    lr.fit(X_train, y_train)
 
-    ## Determine optimal number of features
+
+    #### Determine optimal number of features
     # rfecv = RFECV(estimator=lr, step=1, cv=cv, scoring='f1')
     # rfecv.fit(X, y)
     # print("Optimal number of features for ", str(lr).split("(")[0], ": %d" % rfecv.n_features_)
@@ -230,45 +240,60 @@ if __name__ == '__main__':
     # plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
     # plt.show()
 
-    #*** Build DecisionTreeClassifier model
+    ### Build DecisionTreeClassifier model
     # DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_split=1e-07, class_weight=None, presort=False)
-    dt = DecisionTreeClassifier(class_weight='balanced') #, , warm_start=True
+    if run_grid_search:
+        tuned_parameters = [{
+        'criterion': ['gini'],
+        'splitter': ['best', 'random'],
+        'max_features': [10, 20, 40, 50, 55, None],
+        'max_depth': [5, 10, 20, 30, None],
+        'min_samples_split': [3, 4, 5],
+        'min_weight_fraction_leaf': [0],
+        'class_weight': [None, "balanced"]
+        }]
+
+        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=DecisionTreeClassifier, tuned_parameters=tuned_parameters, print_file=print_file)
+
+    best_parameters = {
+    'splitter': 'random',
+    'min_samples_split': 4,
+    'min_weight_fraction_leaf': 0,
+    'criterion': 'gini',
+    'max_features': 50,
+    'max_depth': None,
+    'class_weight': None
+    }
+
+    dt = DecisionTreeClassifier(splitter='random', min_samples_split=4, min_weight_fraction_leaf=0, criterion='gini', max_features=50, max_depth=None, class_weight=None) #, , warm_start=True
     dt.fit(X_train, y_train)
 
-    tuned_parameters = [{
-    'criterion': ['gini', 'entropy'],
-    'splitter': ['best', 'random'],
-    'max_features': [5, 10, 20, 40, 50, None],
-    'max_depth': [5, 10, 20, None],
-    'min_samples_split': [2, 3, 4],
-    'min_weight_fraction_leaf': [0, .25, .50],
-    'class_weight': [None, "balanced"]
-    }]
 
-    grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=DecisionTreeClassifier, tuned_parameters=tuned_parameters)
-
-    #*** Build GradientBoostingClassifier model
+    ### Build GradientBoostingClassifier model
     # GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
+    if run_grid_search:
+        tuned_parameters = [{
+        'loss': ['deviance', 'exponential'],
+        'n_estimators': [50, 100, 500],
+        'max_depth': [3, 5, 10, 15, 20],
+        'criterion': ['friedman_mse', 'mse', 'mae'],
+        'min_samples_split': [2, 3, 4],
+        'min_weight_fraction_leaf': [0., .25, .50],
+        'subsample': [.25, .50, .75, 1.],
+        'max_features': [5, 10, 20, 40, 50, 55, None],
+        'init': [None, LogisticRegression]
+        }]
+
+        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=GradientBoostingClassifier, tuned_parameters=tuned_parameters, print_file=print_file)
+
+
     gb = GradientBoostingClassifier() #, , warm_start=True
     gb.fit(X_train, y_train)
 
-    tuned_parameters = [{
-    'loss': ['deviance', 'exponential'],
-    'n_estimators': [50, 100, 500],
-    'max_depth': [3, 5, 10, 15, 20],
-    'criterion': ['friedman_mse', 'mse', 'mae'],
-    'min_samples_split': [2, 3, 4],
-    'min_weight_fraction_leaf': [0., .25, .50],
-    'subsample': [.25, .50, .75, 1.],
-    'max_features': [5, 10, 20, 40, 50, None],
-    'init': [None, LogisticRegression]
-    }]
-
-    grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=GradientBoostingClassifier, tuned_parameters=tuned_parameters)
 
     models = [lr, dt, gb]
 
-    #*** Draw a confusion matrixes for the results
+    ### Draw a confusion matrixes for the results
     use_prob=False
     threshold = .5
     y_prob = []
@@ -281,25 +306,22 @@ if __name__ == '__main__':
             y_pred.append((y_prob[i] > threshold).astype(float))
         else:
             y_pred.append(model.predict(X_test))
-        print "\n", model_nm, ": confusion matrix:\n"
-        print pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)
-        print "\n"
+        print_file.write("\n%s: confusion matrix:\n" % model_nm)
+        print_file.write(pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True))
+        print_file.write("\n")
 
-    print "\n       Model            |  Accuracy     |    Precision     |      Recall"
-    print "    Logistic Regression:   %f           %f           %f" % (lr.score(X_test, y_test), precision_score(y_test, y_pred[0]), recall_score(y_test, y_pred[0]))
-    print "    Decision Tree:         %f           %f           %f" % (dt.score(X_test, y_test), precision_score(y_test, y_pred[1]), recall_score(y_test, y_pred[1]))
-    print "    Gradient Boosting:     %f           %f           %f" % (gb.score(X_test, y_test), precision_score(y_test, y_pred[2]), recall_score(y_test, y_pred[2]))
-    # ## MODEL               ACCURACY PRECISION    RECALL
-    # # Logistic Regression:   0.993206           0.000000           0.000000
-    # # Decision Tree:         0.988264           0.166667           0.181818
-    # # SVM:                   0.993206           0.000000           0.000000
-    #
-    #
+    print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall")
+    print_file.write("    Logistic Regression:   %f           %f           %f" % (lr.score(X_test, y_test), precision_score(y_test, y_pred[0]), recall_score(y_test, y_pred[0])))
+    print_file.write("    Decision Tree:         %f           %f           %f" % (dt.score(X_test, y_test), precision_score(y_test, y_pred[1]), recall_score(y_test, y_pred[1])))
+    print_file.write("    Gradient Boosting:     %f           %f           %f" % (gb.score(X_test, y_test), precision_score(y_test, y_pred[2]), recall_score(y_test, y_pred[2])))
+
     ### Use plot_roc function provided during random forests to visualize curve of each #model
-    print "Use the `plot_roc_curve` function to visualize the roc curve:"
+    print_file.write("Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.")
     ## LogisticRegression ROC plot
     plot_roc_curve(X=X_t, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=lr)
     ## DecisionTreeClassifier ROC plot
     plot_roc_curve(X=X_t, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=dt)
     ## GradientBoostingClassifier ROC plot
     plot_roc_curve(X=X_t, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=gb)
+
+    print_file.close()
