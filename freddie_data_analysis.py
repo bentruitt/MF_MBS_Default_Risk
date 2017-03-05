@@ -83,10 +83,8 @@ def map_dfs(df_mflp, df_mspd, df_map):
 
     df_mflp.columns = df_map[map_cols]
     df_mflp['published_date'] = pd.to_datetime(df_mflp['published_date'], errors='coerce')
-    df_mflp['freddie_held'] = 1.0
     df_mspd.columns = df_map[map_cols]
     df_mspd['published_date'] = pd.to_datetime(df_mspd['published_date'], errors='coerce')
-    df_mspd['freddie_held'] = 0.0
 
     df_comb = pd.concat([df_mflp, df_mspd])
     df_comb.set_index(np.arange(df_comb.shape[0]), drop=True, inplace=True)
@@ -170,50 +168,50 @@ def clean_mspd_data(df):
         ltv_col = df['uw_ltv'].replace('[%]','', regex=True)
         ltv_col = ltv_col.astype(float)/100.
         df['uw_ltv'] = ltv_col
+    special_svcr = [x.lower().replace(' ', '_') for x in df['special_servicer']]
+    df['special_servicer'] = np.array(special_svcr)
     return df
 
 if __name__ == '__main__':
     datadir = 'data/'
 
-    ### open data nd import into pandas dataframes
-    refresh_data = str(raw_input('Would you like to refresh the data? [y/n]'))
-    if refresh_data == 'y':
-        mflp_file = 'mlpd_datamart_1q16.txt'
-        mspd_file = 'custom_rpt_all_properties_20170222.csv'
-        ## Open Multifamily Loan Performance Data
-        df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
-        # Clean DataFrame data
-        # df_mflp = clean_df_data(df_mflp)
-        ## Open Multifamily Securitization Program Data
-        df_mspd = read_data_pandas(datadir + mspd_file)
-        # Clean DataFrame data
-        df_mspd = clean_mspd_data(df_mspd)
-        prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
+    ### open data and import into pandas dataframes
+    mflp_file = 'mlpd_datamart_1q16.txt'
+    mspd_file = 'custom_rpt_all_properties_20170222.csv'
+    ## Open Multifamily Loan Performance Data
+    df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
+    df_mflp['special_svcr'] = 'freddie'
+    # Clean DataFrame data
+    # df_mflp = clean_df_data(df_mflp)
+    ## Open Multifamily Securitization Program Data
+    df_mspd = read_data_pandas(datadir + mspd_file)
+    # Clean DataFrame data
+    df_mspd = clean_mspd_data(df_mspd)
+    prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
 
-        col_map_a = [
-        ['loan_id', 'lnno','loan_id'],
-        ['loan_status', 'mrtg_status', 'dlq_status_text'],
-        ['published_date', 'quarter', 'distributiondate'],
-        ['current_balance', 'amt_upb_endg', 'actual_balance'],
-        ['original_balance', 'amt_upb_pch', 'original_note_amount'],
-        ['property_state', 'code_st', 'state'],
-        ['o_int_rate', 'rate_int', 'note_rate'],
-        ['o_dsc_ratio', 'rate_dcr', 'dscr_(ncf)'],
-        ['o_ltv_ratio', 'rate_ltv', 'uw_ltv']]
+    ### map input tables to new output table for analysis
+    # New table | MFLP table | MSPD table
+    col_map_a = [
+    ['loan_id', 'lnno','loan_id'],
+    ['loan_status', 'mrtg_status', 'dlq_status_text'],
+    ['published_date', 'quarter', 'distributiondate'],
+    ['current_balance', 'amt_upb_endg', 'actual_balance'],
+    ['original_balance', 'amt_upb_pch', 'original_note_amount'],
+    ['property_state', 'code_st', 'state'],
+    ['o_int_rate', 'rate_int', 'note_rate'],
+    ['o_dsc_ratio', 'rate_dcr', 'dscr_(ncf)'],
+    ['o_ltv_ratio', 'rate_ltv', 'uw_ltv'],
+    ['special_servicer', 'special_svcr', 'special_servicer']]
 
-        df_map = pd.DataFrame(data=col_map_a, columns=['col_a', 'mflp_col', 'mspd_col'], index=np.arange(len(col_map_a)))
+    df_map = pd.DataFrame(data=col_map_a, columns=['col_a', 'mflp_col', 'mspd_col'], index=np.arange(len(col_map_a)))
 
-        df_comb = map_dfs(df_mflp, df_mspd, df_map)
-        df_comb.to_csv(datadir + 'df_comb' + '.csv')
+    df_comb = map_dfs(df_mflp, df_mspd, df_map)
 
-
-    else:
-        df_comb = pd.read_csv(datadir + 'df_comb' + '.csv')
-
+    # add engineered columns
     df_comb['principal_paydown'] = df_comb['original_balance'] - df_comb['current_balance']
 
     # define label to be loans beyond 60 days late and any that have defaulted in the past
-    df_comb['label'] = [float(x) for x in ((df_comb['loan_status'].isin([200,300,450])) | ((df_comb['freddie_held']==0) & (df_comb['loan_id'].isin(prob_loan_ids))))]
+    df_comb['label'] = [float(x) for x in ((df_comb['loan_status'].isin([200,300,450])) | ((df_comb['special_servicer']=='freddie') & (df_comb['loan_id'].isin(prob_loan_ids))))]
 
     df_comb.drop(['loan_id', 'loan_status'], inplace=True, axis=1)
     df_comb.to_csv(datadir + 'df_labeled' + '.csv')

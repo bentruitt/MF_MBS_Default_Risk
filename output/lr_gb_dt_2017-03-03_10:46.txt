@@ -1,0 +1,127 @@
+
+####--------------------GradientBoostingClassifier Grid Search----------#####
+
+### Tuning hyper-parameters for f1
+Best parameters set found on development set for GradientBoostingClassifier: {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+Grid scores on development set:
+0.043 (+/-0.112) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.000 (+/-0.000) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.026 (+/-0.065) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.034 (+/-0.083) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.055 (+/-0.152) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.018 (+/-0.073) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 3}
+0.015 (+/-0.062) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.000 (+/-0.000) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.030 (+/-0.074) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.000 (+/-0.000) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.060 (+/-0.061) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.017 (+/-0.067) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 3}
+0.056 (+/-0.110) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.016 (+/-0.064) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.013 (+/-0.053) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.031 (+/-0.123) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.045 (+/-0.075) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.000 (+/-0.000) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 3}
+0.013 (+/-0.053) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.000 (+/-0.000) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.028 (+/-0.069) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.066 (+/-0.194) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.036 (+/-0.062) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.030 (+/-0.075) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 3}
+0.025 (+/-0.062) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.027 (+/-0.066) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.075 (+/-0.145) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.037 (+/-0.094) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.048 (+/-0.055) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.034 (+/-0.087) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 3}
+0.062 (+/-0.179) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.030 (+/-0.075) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.049 (+/-0.119) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.029 (+/-0.072) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.035 (+/-0.107) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.028 (+/-0.069) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 3}
+0.098 (+/-0.111) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.015 (+/-0.062) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.044 (+/-0.077) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.056 (+/-0.100) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.085 (+/-0.140) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.068 (+/-0.115) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 5}
+0.037 (+/-0.061) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.033 (+/-0.082) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.045 (+/-0.081) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.050 (+/-0.133) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.072 (+/-0.074) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.030 (+/-0.073) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 5}
+0.068 (+/-0.110) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.039 (+/-0.064) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.045 (+/-0.094) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.057 (+/-0.108) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.057 (+/-0.075) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.059 (+/-0.106) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 5}
+0.070 (+/-0.143) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.104 (+/-0.104) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.091 (+/-0.143) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.040 (+/-0.160) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.051 (+/-0.056) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.051 (+/-0.093) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 5}
+0.067 (+/-0.041) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.070 (+/-0.124) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.098 (+/-0.138) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.069 (+/-0.122) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.055 (+/-0.072) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.081 (+/-0.156) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 5}
+0.046 (+/-0.052) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.073 (+/-0.134) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.051 (+/-0.130) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.084 (+/-0.158) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.038 (+/-0.068) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.089 (+/-0.169) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 5}
+0.063 (+/-0.049) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.093 (+/-0.114) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.049 (+/-0.027) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.058 (+/-0.125) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.055 (+/-0.058) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.096 (+/-0.109) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 2, 'max_depth': 10}
+0.074 (+/-0.062) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.054 (+/-0.056) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.066 (+/-0.101) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.071 (+/-0.094) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.016 (+/-0.029) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.065 (+/-0.003) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 10, 'min_samples_split': 4, 'max_depth': 10}
+0.101 (+/-0.110) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.073 (+/-0.123) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.040 (+/-0.088) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.079 (+/-0.130) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.093 (+/-0.081) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.096 (+/-0.074) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 2, 'max_depth': 10}
+0.055 (+/-0.113) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.095 (+/-0.125) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.093 (+/-0.112) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.103 (+/-0.090) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.083 (+/-0.115) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.086 (+/-0.183) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': 40, 'min_samples_split': 4, 'max_depth': 10}
+0.096 (+/-0.143) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.078 (+/-0.111) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.080 (+/-0.072) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.081 (+/-0.112) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.042 (+/-0.050) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.075 (+/-0.148) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 2, 'max_depth': 10}
+0.046 (+/-0.060) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+0.067 (+/-0.091) for {'loss': 'deviance', 'n_estimators': 50, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+0.081 (+/-0.065) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+0.072 (+/-0.104) for {'loss': 'deviance', 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+0.049 (+/-0.091) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 0.5, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+0.069 (+/-0.101) for {'loss': 'deviance', 'n_estimators': 200, 'subsample': 1.0, 'init': None, 'min_weight_fraction_leaf': 0.0, 'criterion': 'friedman_mse', 'max_features': None, 'min_samples_split': 4, 'max_depth': 10}
+Detailed classification report: for GradientBoostingClassifier, f1
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+             precision    recall  f1-score   support
+
+        0.0       0.99      1.00      1.00      4824
+        1.0       0.00      0.00      0.00        33
+
+avg / total       0.99      0.99      0.99      4857
+
+-----------------------------------------------------------
+
+LogisticRegression: confusion matrix:

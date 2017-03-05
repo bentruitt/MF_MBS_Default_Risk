@@ -43,6 +43,7 @@ def load_data(in_file):
     df.fillna(0, inplace=True)
     # apply get_dummies to particular columns
     df = pd.get_dummies(df, prefix=['state'], columns=['property_state'])
+    df = pd.get_dummies(df, prefix=['ss'], columns=['special_servicer'])
     # return prepared dataframe
     return df
 
@@ -72,7 +73,7 @@ def plot_roc_curve(X, y, plot_dir, trial, cv, model):
         mean_tpr += interp(mean_fpr, fpr, tpr)
         mean_tpr[0] = 0.0
         roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.2f)' % (i, roc_auc))
+        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.2f)' % (i+1, roc_auc))
 
     plt.plot([0, 1], [0, 1], '--', color=(0.6, 0.6, 0.6), label='Random')
 
@@ -144,10 +145,10 @@ def feature_importance():
     # plt.savefig(plot_dir + "case_histograms" + trial + ".png")
     pass
 
-def grid_search(X_train, X_test, y_train, y_test, cv, estimator, tuned_parameters, print_file):
+def grid_search(X_train, X_test, y_train, y_test, cv, estimator, scores, tuned_parameters, print_file):
     # Set the parameters by cross-validation
-    scores = ['f1'] #'precision_macro', 'recall_macro', 'f1_weighted',
     model_nm = str(estimator).split('.')[-1:][0].split("'")[0]
+    best_parameters = {}
 
     print_file.write("\n####--------------------%s Grid Search----------#####\n" % model_nm)
     for score in scores:
@@ -158,6 +159,7 @@ def grid_search(X_train, X_test, y_train, y_test, cv, estimator, tuned_parameter
 
         print_file.write("\nBest parameters set found on development set for %s: " % model_nm)
         print_file.write("%s" % clf.best_params_)
+        best_parameters[score] = clf.best_params_
 
         print_file.write("\nGrid scores on development set:")
         means = clf.cv_results_['mean_test_score']
@@ -173,6 +175,7 @@ def grid_search(X_train, X_test, y_train, y_test, cv, estimator, tuned_parameter
         y_true, y_pred = y_test, clf.predict(X_test)
         print_file.write(classification_report(y_true, y_pred))
         print_file.write("\n-----------------------------------------------------------\n")
+    return best_parameters
 
 if __name__ == '__main__':
 
@@ -200,11 +203,21 @@ if __name__ == '__main__':
     X_t = scaler.fit_transform(X)
     cv = StratifiedKFold(y, n_folds=5, shuffle=True)
 
-    run_grid_search = bool(raw_input("Run GridSearchCV?[y/n]"))
+    ### Check which grid searches to run
+    scores = ['f1'] # 'precision_macro', 'recall_macro', 'f1_weighted'
+    best_parameters_lr = {}
+    best_parameters_dt = {}
+    best_parameters_gb = {}
+
+    run_grid_search_lr = str(raw_input("Run LogisticRegression GridSearchCV?[y/n]"))
+
+    run_grid_search_dt = str(raw_input("Run DecisionTreeClassifier GridSearchCV?[y/n]"))
+
+    run_grid_search_gb = str(raw_input("Run GradientBoostingClassifier GridSearchCV?[y/n]"))
 
     ### Build LogisticRegression model
     # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
-    if run_grid_search:
+    if run_grid_search_lr == 'y':
         tuned_parameters = [{
         'penalty': ['l1'],
         'C': [1., 2500., 5000., 7500., 10000.],
@@ -212,37 +225,26 @@ if __name__ == '__main__':
         }, {
         'penalty': ['l2'],
         'solver': ['newton-cg'],
-        'C': [1., 10., 100., 1000., 2000.],
+        'C': [1., 10., 100., 1000., 2000., 5000., 7500., 10000.],
         'class_weight': ['balanced']
         }]
 
-        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters, print_file=print_file)
+        best_parameters_lr = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
+        print best_parameters_lr
+    else:
+        best_parameters_lr['f1'] = {
+        'penalty': 'l2',
+        'C': 15000.0,
+        'solver': 'newton-cg',
+        'class_weight': 'balanced'
+        }
 
-    best_parameters = [{
-    'penalty': 'l2',
-    'C': 2000.0,
-    'solver': 'newton-cg',
-    'class_weight': 'balanced'
-    }]
-
-    lr = LogisticRegression(penalty='l2', C=2000.0, solver='newton-cg', class_weight='balanced')
+    lr = LogisticRegression(**best_parameters_lr['f1'])
     lr.fit(X_train, y_train)
-
-
-    #### Determine optimal number of features
-    # rfecv = RFECV(estimator=lr, step=1, cv=cv, scoring='f1')
-    # rfecv.fit(X, y)
-    # print("Optimal number of features for ", str(lr).split("(")[0], ": %d" % rfecv.n_features_)
-    # # Plot number of features VS. cross-validation scores
-    # plt.figure()
-    # plt.xlabel("Number of features selected")
-    # plt.ylabel("Cross validation score (nb of correct classifications)")
-    # plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
-    # plt.show()
 
     ### Build DecisionTreeClassifier model
     # DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_split=1e-07, class_weight=None, presort=False)
-    if run_grid_search:
+    if run_grid_search_dt == 'y':
         tuned_parameters = [{
         'criterion': ['gini'],
         'splitter': ['best', 'random'],
@@ -253,45 +255,84 @@ if __name__ == '__main__':
         'class_weight': [None, "balanced"]
         }]
 
-        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=DecisionTreeClassifier, tuned_parameters=tuned_parameters, print_file=print_file)
+        best_parameters_dt = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=DecisionTreeClassifier, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
+        print best_parameters_dt
+    else:
+        best_parameters_dt['f1'] = {
+        'splitter': 'best',
+        'min_samples_split': 4,
+        'min_weight_fraction_leaf': 0,
+        'criterion': 'gini',
+        'max_features': None,
+        'max_depth': None,
+        'class_weight': None
+        }
 
-    best_parameters = {
-    'splitter': 'random',
-    'min_samples_split': 4,
-    'min_weight_fraction_leaf': 0,
-    'criterion': 'gini',
-    'max_features': 50,
-    'max_depth': None,
-    'class_weight': None
-    }
-
-    dt = DecisionTreeClassifier(splitter='random', min_samples_split=4, min_weight_fraction_leaf=0, criterion='gini', max_features=50, max_depth=None, class_weight=None) #, , warm_start=True
+    dt = DecisionTreeClassifier(**best_parameters_dt['f1']) #, , warm_start=True
     dt.fit(X_train, y_train)
 
 
     ### Build GradientBoostingClassifier model
     # GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
-    if run_grid_search:
+    if run_grid_search_gb == 'y':
         tuned_parameters = [{
-        'loss': ['deviance', 'exponential'],
-        'n_estimators': [50, 100, 500],
-        'max_depth': [3, 5, 10, 15, 20],
-        'criterion': ['friedman_mse', 'mse', 'mae'],
-        'min_samples_split': [2, 3, 4],
-        'min_weight_fraction_leaf': [0., .25, .50],
-        'subsample': [.25, .50, .75, 1.],
-        'max_features': [5, 10, 20, 40, 50, 55, None],
-        'init': [None, LogisticRegression]
+        'loss': ['deviance'], # ,'exponential'
+        'n_estimators': [100], # 50, 200
+        'max_depth': [15], #3, 5, 10, 15, 20
+        'criterion': ['friedman_mse'], # ,'mse', 'mae'
+        'min_samples_split': [3], # 3, 4
+        'min_samples_leaf': [1], #, 2, 3
+        'subsample': [1.0], # , .8, .9, 1.
+        'max_features': [None], # 5, 10, 20, 40, 50, 55, None
+        'init': [None], # 'deviance', 'exponential'
+        'warm_start': [False, True]
         }]
 
-        grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=GradientBoostingClassifier, tuned_parameters=tuned_parameters, print_file=print_file)
+        best_parameters_gb = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=GradientBoostingClassifier, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
+        print best_parameters_gb
+    else:
+        best_parameters_gb['f1'] = {
+        'loss': 'deviance',
+        'min_samples_leaf': 1,
+        'n_estimators': 100,
+        'subsample': 0.7,
+        'init': None,
+        'min_samples_split': 3,
+        'criterion': 'friedman_mse',
+        'max_features': None,
+        'max_depth': 15,
+        'warm_start': False
+        }
 
-
-    gb = GradientBoostingClassifier() #, , warm_start=True
+    gb = GradientBoostingClassifier(**best_parameters_gb['f1'])
     gb.fit(X_train, y_train)
 
-
     models = [lr, dt, gb]
+
+    #### Determine optimal number of features
+    n = 15 # number of features to list
+    for model in models:
+        model_nm = str(lr).split('.')[-1:][0].split("'")[0]
+        rfecv = RFECV(estimator=model, step=1, cv=cv, scoring='f1')
+        try:
+            rfecv.fit(X, y)
+        except:
+            set_trace()
+        print_file.write("Optimal number of features for %s: %d" % (model_nm, rfecv.n_features_))
+        srt_idx = np.argsort(rfecv.grid_scores_)
+        srted_scores = rfecv.grid_scores_[srt_idx]
+        srted_columns = df.columns[srt_idx]
+        print_file.write("\nTop %d Features:\n" % n)
+        for i in range(n):
+            print_file.write("%d). %s - %f\n" % (i+1, srted_columns[i], srted_scores[i]))
+        # Plot number of features VS. cross-validation scores
+        plt.figure()
+        plt.xlabel("Number of features selected")
+        plt.ylabel("Cross validation score (nb of correct classifications)")
+        plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+        plt.tight_layout()
+        plt.savefig(plot_dir + 'Nm_Featuers_plot_' + model_nm + trial + '.png')
+        plt.close()
 
     ### Draw a confusion matrixes for the results
     use_prob=False
@@ -307,16 +348,16 @@ if __name__ == '__main__':
         else:
             y_pred.append(model.predict(X_test))
         print_file.write("\n%s: confusion matrix:\n" % model_nm)
-        print_file.write(pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True))
+        print_file.write(str(pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)))
         print_file.write("\n")
 
     print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall")
-    print_file.write("    Logistic Regression:   %f           %f           %f" % (lr.score(X_test, y_test), precision_score(y_test, y_pred[0]), recall_score(y_test, y_pred[0])))
-    print_file.write("    Decision Tree:         %f           %f           %f" % (dt.score(X_test, y_test), precision_score(y_test, y_pred[1]), recall_score(y_test, y_pred[1])))
-    print_file.write("    Gradient Boosting:     %f           %f           %f" % (gb.score(X_test, y_test), precision_score(y_test, y_pred[2]), recall_score(y_test, y_pred[2])))
+    print_file.write("\n    Logistic Regression:   %f           %f           %f" % (lr.score(X_test, y_test), precision_score(y_test, y_pred[0]), recall_score(y_test, y_pred[0])))
+    print_file.write("\n    Decision Tree:         %f           %f           %f" % (dt.score(X_test, y_test), precision_score(y_test, y_pred[1]), recall_score(y_test, y_pred[1])))
+    print_file.write("\n    Gradient Boosting:     %f           %f           %f" % (gb.score(X_test, y_test), precision_score(y_test, y_pred[2]), recall_score(y_test, y_pred[2])))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
-    print_file.write("Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.")
+    print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.")
     ## LogisticRegression ROC plot
     plot_roc_curve(X=X_t, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=lr)
     ## DecisionTreeClassifier ROC plot

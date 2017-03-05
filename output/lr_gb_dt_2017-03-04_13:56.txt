@@ -1,0 +1,46 @@
+
+####--------------------GradientBoostingClassifier Grid Search----------#####
+
+### Tuning hyper-parameters for f1
+Best parameters set found on development set for GradientBoostingClassifier: {'warm_start': True, 'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 15}
+Grid scores on development set:
+0.082 (+/-0.163) for {'warm_start': False, 'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 15}
+0.090 (+/-0.149) for {'warm_start': True, 'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 1.0, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 15}
+Detailed classification report: for GradientBoostingClassifier, f1
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+             precision    recall  f1-score   support
+
+        0.0       0.99      0.99      0.99      4824
+        1.0       0.03      0.03      0.03        33
+
+avg / total       0.99      0.99      0.99      4857
+
+-----------------------------------------------------------
+
+LogisticRegression: confusion matrix:
+Predicted   0.0   1.0   All
+True                       
+0.0        3592  1232  4824
+1.0          11    22    33
+All        3603  1254  4857
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4769   55  4824
+1.0          32    1    33
+All        4801   56  4857
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4795   29  4824
+1.0          32    1    33
+All        4827   30  4857
+
+       Model            |  Accuracy     |    Precision     |      Recall
+    Logistic Regression:   0.744081           0.017544           0.666667
+    Decision Tree:         0.982088           0.017857           0.030303
+    Gradient Boosting:     0.987441           0.033333           0.030303
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.

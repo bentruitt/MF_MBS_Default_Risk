@@ -1,0 +1,56 @@
+
+####--------------------GradientBoostingClassifier Grid Search----------#####
+
+### Tuning hyper-parameters for f1
+Best parameters set found on development set for GradientBoostingClassifier: {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': 50, 'max_depth': 15}
+Grid scores on development set:
+0.055 (+/-0.071) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': 40, 'max_depth': 10}
+0.060 (+/-0.107) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': 40, 'max_depth': 10}
+0.063 (+/-0.043) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': 50, 'max_depth': 10}
+0.010 (+/-0.039) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': 50, 'max_depth': 10}
+0.010 (+/-0.038) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 10}
+0.051 (+/-0.115) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 10}
+0.031 (+/-0.080) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': 40, 'max_depth': 15}
+0.067 (+/-0.054) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': 40, 'max_depth': 15}
+0.108 (+/-0.114) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': 50, 'max_depth': 15}
+0.039 (+/-0.071) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': 50, 'max_depth': 15}
+0.092 (+/-0.064) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 3, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 15}
+0.059 (+/-0.072) for {'loss': 'deviance', 'min_samples_leaf': 1, 'n_estimators': 100, 'subsample': 0.7, 'init': None, 'min_samples_split': 4, 'criterion': 'friedman_mse', 'max_features': None, 'max_depth': 15}
+Detailed classification report: for GradientBoostingClassifier, f1
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+             precision    recall  f1-score   support
+
+        0.0       0.99      0.99      0.99      4824
+        1.0       0.08      0.09      0.08        33
+
+avg / total       0.99      0.99      0.99      4857
+
+-----------------------------------------------------------
+
+LogisticRegression: confusion matrix:
+Predicted   0.0   1.0   All
+True                       
+0.0        3678  1146  4824
+1.0          11    22    33
+All        3689  1168  4857
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4766   58  4824
+1.0          30    3    33
+All        4796   61  4857
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4792   32  4824
+1.0          32    1    33
+All        4824   33  4857
+
+       Model            |  Accuracy     |    Precision     |      Recall
+    Logistic Regression:   0.761787           0.018836           0.666667
+    Decision Tree:         0.981882           0.049180           0.090909
+    Gradient Boosting:     0.986823           0.030303           0.030303
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.

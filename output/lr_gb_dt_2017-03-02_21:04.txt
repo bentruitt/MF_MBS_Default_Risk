@@ -381,4 +381,26 @@ Grid scores on development set:
 0.048 (+/-0.030) for {'splitter': 'random', 'min_samples_split': 5, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 50, 'max_depth': None, 'class_weight': 'balanced'}
 0.043 (+/-0.053) for {'splitter': 'best', 'min_samples_split': 3, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
 0.045 (+/-0.097) for {'splitter': 'random', 'min_samples_split': 3, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
-0.033 (+/-0.033) for {'splitter': 'best', '
+0.033 (+/-0.033) for {'splitter': 'best', 'min_samples_split': 4, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
+0.062 (+/-0.087) for {'splitter': 'random', 'min_samples_split': 4, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
+0.023 (+/-0.037) for {'splitter': 'best', 'min_samples_split': 5, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
+0.083 (+/-0.071) for {'splitter': 'random', 'min_samples_split': 5, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': 55, 'max_depth': None, 'class_weight': 'balanced'}
+0.050 (+/-0.063) for {'splitter': 'best', 'min_samples_split': 3, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+0.050 (+/-0.074) for {'splitter': 'random', 'min_samples_split': 3, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+0.039 (+/-0.049) for {'splitter': 'best', 'min_samples_split': 4, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+0.053 (+/-0.050) for {'splitter': 'random', 'min_samples_split': 4, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+0.030 (+/-0.030) for {'splitter': 'best', 'min_samples_split': 5, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+0.058 (+/-0.046) for {'splitter': 'random', 'min_samples_split': 5, 'min_weight_fraction_leaf': 0, 'criterion': 'gini', 'max_features': None, 'max_depth': None, 'class_weight': 'balanced'}
+Detailed classification report: for DecisionTreeClassifier, f1
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+             precision    recall  f1-score   support
+
+        0.0       0.99      0.99      0.99      4824
+        1.0       0.08      0.15      0.10        33
+
+avg / total       0.99      0.98      0.99      4857
+
+-----------------------------------------------------------
+
+####--------------------GradientBoostingClassifier Grid Search----------#####

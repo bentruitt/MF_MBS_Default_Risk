@@ -1,0 +1,27 @@
+
+LogisticRegression: confusion matrix:
+Predicted   0.0   1.0   All
+True                       
+0.0        3686  1138  4824
+1.0          15    18    33
+All        3701  1156  4857
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4794   30  4824
+1.0          32    1    33
+All        4826   31  4857
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4789   35  4824
+1.0          31    2    33
+All        4820   37  4857
+
+       Model            |  Accuracy     |    Precision     |      Recall
+    Logistic Regression:   0.762611           0.015571           0.545455
+    Decision Tree:         0.987235           0.032258           0.030303
+    Gradient Boosting:     0.986411           0.054054           0.060606
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
