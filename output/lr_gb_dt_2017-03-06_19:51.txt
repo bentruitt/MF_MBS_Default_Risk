@@ -1,0 +1,43 @@
+This analysis was run on the dataset from data/df_comb_labeled.csv.
+
+Shape of DataFrame: (19425, 77)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'freddie_held', 'principal_paydown', 'label', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_VT', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Optimal number of features for LogisticRegression: 64
+
+Top 15 Features:
+1). current_balance - 0.020007
+2). orig_dscr - 0.021455
+3). orig_int_rate - 0.021490
+4). original_balance - 0.021531
+5). orig_ltv - 0.023104
+6). freddie_held - 0.023111
+7). principal_paydown - 0.023173
+8). state_AK - 0.024485
+9). state_AL - 0.026092
+10). state_AZ - 0.026112
+11). state_AR - 0.026458
+12). state_CA - 0.026754
+13). state_CO - 0.027497
+14). state_DC - 0.028285
+15). state_IN - 0.028347
+
+Optimal number of features for DecisionTreeClassifier: 61
+
+Top 15 Features:
+1). current_balance - 0.000000
+2). original_balance - 0.008163
+3). state_CA - 0.015000
+4). orig_ltv - 0.020113
+5). principal_paydown - 0.023563
+6). orig_dscr - 0.024601
+7). orig_int_rate - 0.024864
+8). state_CO - 0.031269
+9). state_CT - 0.032993
+10). state_DC - 0.036500
+11). state_AZ - 0.043286
+12). state_AR - 0.043839
+13). state_DE - 0.044849
+14). freddie_held - 0.045997
+15). state_AL - 0.052144

@@ -1,0 +1,34 @@
+Optimal number of features for 0001, verbose=0, warm_start=False): 2
+Top 15 Features:
+1). o_dsc_ratio - 0.024159
+2). current_balance - 0.025204
+3). o_ltv_ratio - 0.026468
+4). o_int_rate - 0.027619
+5). freddie_held - 0.027855
+6). state_KS - 0.030026
+7). state_KY - 0.030027
+8). state_IN - 0.030079
+9). state_IL - 0.030175
+10). principal_paydown - 0.030382
+11). state_ID - 0.030418
+12). state_IA - 0.030609
+13). state_HI - 0.030722
+14). state_GA - 0.031052
+15). state_FL - 0.031130
+Optimal number of features for 0001, verbose=0, warm_start=False): 52
+Top 15 Features:
+1). current_balance - 0.000000
+2). original_balance - 0.000000
+3). freddie_held - 0.032222
+4). o_ltv_ratio - 0.033077
+5). principal_paydown - 0.033786
+6). o_int_rate - 0.034820
+7). state_AZ - 0.037850
+8). state_CA - 0.044798
+9). o_dsc_ratio - 0.044898
+10). state_AL - 0.053715
+11). state_AR - 0.059362
+12). state_AK - 0.059835
+13). state_CO - 0.069610
+14). state_GA - 0.069877
+15). state_DE - 0.074105

@@ -1,0 +1,94 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7855, 92)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'freddie_held', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+
+This is a randomly sampled training dataset with 15000 rows.
+
+This randomly sampled dataset is sampled with a ratio of 0.250000 true labeled samples.
+
+Optimal number of features for LogisticRegression: 66
+
+Top 15 Features:
+1). current_balance - 0.008873
+2). original_balance - 0.010375
+3). orig_int_rate - 0.010439
+4). most_rct_noi - 0.013166
+5). most_rct_occ_rate - 0.013223
+6). occ_rate_delta - 0.013426
+7). noi_delta - 0.013614
+8). orig_noi - 0.013785
+9). orig_occ_rate - 0.013880
+10). principal_paydown - 0.013895
+11). freddie_held - 0.014367
+12). ltv_delta - 0.014487
+13). orig_dscr - 0.014648
+14). orig_value - 0.014651
+15). most_rct_value - 0.014693
+
+Optimal number of features for DecisionTreeClassifier: 49
+
+Top 15 Features:
+1). current_balance - 0.000000
+2). orig_int_rate - 0.000000
+3). orig_dscr - 0.036364
+4). original_balance - 0.044444
+5). orig_ltv - 0.044444
+6). orig_occ_rate - 0.084444
+7). freddie_held - 0.094444
+8). noi_delta - 0.097059
+9). principal_paydown - 0.101587
+10). most_rct_value - 0.112674
+11). most_rct_noi - 0.114286
+12). orig_noi - 0.120769
+13). most_rct_occ_rate - 0.130769
+14). occ_rate_delta - 0.133506
+15). state_IN - 0.148597
+
+Optimal number of features for GradientBoostingClassifier: 88
+
+Top 15 Features:
+1). current_balance - 0.000000
+2). orig_ltv - 0.000000
+3). freddie_held - 0.000000
+4). orig_occ_rate - 0.000000
+5). state_NH - 0.022222
+6). orig_dscr - 0.022222
+7). ss_sabal_financial_group,_l.p. - 0.026667
+8). debt_serv_delta - 0.026667
+9). orig_int_rate - 0.028571
+10). principal_paydown - 0.028571
+11). occ_rate_delta - 0.028571
+12). state_UT - 0.028571
+13). most_rct_occ_rate - 0.030769
+14). ss_arbor_commercial_mortgage,_llc - 0.033333
+15). original_balance - 0.036364
+
+LogisticRegression: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2291  293  2584
+1.0           7    2     9
+All        2298  295  2593
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2576    8  2584
+1.0           9    0     9
+All        2585    8  2593
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2572   12  2584
+1.0           9    0     9
+All        2581   12  2593
+
+       Model            |  Accuracy     |    Precision     |      Recall
+    Logistic Regression:   0.884304           0.006780           0.222222
+    Decision Tree:         0.993444           0.000000           0.000000
+    Gradient Boosting:     0.991901           0.000000           0.000000
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.

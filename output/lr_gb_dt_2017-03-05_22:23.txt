@@ -1,0 +1,86 @@
+This analysis was run on the dataset from data/.
+df_comb_labeled.csv
+Features in Dataset:
+Shape of DataFrame: (19425, 76)['current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'freddie_held', 'principal_paydown', 'label', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_VT', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+This is a bootstrapped file of 20000 rows.
+
+Optimal number of features for LogisticRegression: 29
+Top 15 Features:
+1). orig_ltv - 0.021061
+2). orig_dscr - 0.021429
+3). original_balance - 0.021733
+4). orig_int_rate - 0.022066
+5). current_balance - 0.022341
+6). freddie_held - 0.022435
+7). principal_paydown - 0.023096
+8). state_AK - 0.027280
+9). state_AL - 0.029929
+10). state_AR - 0.030769
+11). state_AZ - 0.031362
+12). state_CA - 0.032822
+13). state_HI - 0.034064
+14). state_IA - 0.034222
+15). state_KS - 0.034694
+
+Optimal number of features for DecisionTreeClassifier: 33
+Top 15 Features:
+1). current_balance - 0.000000
+2). orig_int_rate - 0.008000
+3). original_balance - 0.008511
+4). orig_dscr - 0.026962
+5). state_AK - 0.032182
+6). orig_ltv - 0.033874
+7). state_DC - 0.048902
+8). freddie_held - 0.057609
+9). state_DE - 0.058066
+10). state_AL - 0.058766
+11). state_OH - 0.059224
+12). state_MT - 0.059387
+13). state_AR - 0.059521
+14). state_OK - 0.059748
+15). state_SC - 0.061079
+
+Optimal number of features for GradientBoostingClassifier: 20
+Top 15 Features:
+1). current_balance - 0.000000
+2). orig_int_rate - 0.000000
+3). original_balance - 0.016581
+4). state_MS - 0.016783
+5). freddie_held - 0.021833
+6). orig_ltv - 0.022367
+7). state_TX - 0.031307
+8). principal_paydown - 0.032073
+9). state_AL - 0.033490
+10). state_AK - 0.034923
+11). state_MO - 0.038478
+12). ss_c-iii_asset_management_llc - 0.040978
+13). state_AZ - 0.041010
+14). ss_wells_fargo_bank - 0.042118
+15). state_CO - 0.042473
+
+LogisticRegression: confusion matrix:
+Predicted   0.0   1.0   All
+True                       
+0.0        3745  1081  4826
+1.0          10    21    31
+All        3755  1102  4857
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4795   31  4826
+1.0          30    1    31
+All        4825   32  4857
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        4796   30  4826
+1.0          31    0    31
+All        4827   30  4857
+
+       Model            |  Accuracy     |    Precision     |      Recall
+    Logistic Regression:   0.775376           0.019056           0.677419
+    Decision Tree:         0.987441           0.031250           0.032258
+    Gradient Boosting:     0.987441           0.000000           0.000000
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.

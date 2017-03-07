@@ -31,6 +31,9 @@ def read_data_csv(filename):
 
 ### Process Columns
 def map_dfs(df_mflp, df_mspd, df_map):
+
+    prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
+
     map_cols, mflp_cols, mspd_cols = df_map.columns.tolist()
 
     df_mflp = df_mflp[df_map[mflp_cols]]
@@ -38,19 +41,25 @@ def map_dfs(df_mflp, df_mspd, df_map):
     df_mspd = df_mspd[df_map[mspd_cols]]
 
     # Map df_mspd dlq_status_text column to corresponding values in df_MFLP
+    # 100 = Current or less than 60 day delinquent
+    # 200 = 60 or more days delinquent
+    # 300 = Foreclosure
+    # 350 = Problem Loans
+    # 450 = Real estate owned
+    # 500 = Closed
     dlq_status_text_map = {
     'Current':100,
     '90+':200,
-    '< 30 ':100,
+    '< 30 ':350,
     'Grace':100,
-    'Perf Balloon':100,
+    'Perf Balloon':350,
     '-':100, '60-89':200}
 
     dlq_status_text_list = df_mspd['dlq_status_text'].tolist()
     df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in dlq_status_text_list]
 
     # Map df_mspd note_rate to be 0.0xxx format instead of x.xx% format
-    df_mspd['note_rate'] = df_mspd['note_rate']/100.
+    df_mspd['note_rate'] = np.divide(df_mspd['note_rate'], 100.)
 
     # Convert df_mflp quarter column to date
     eoqs = []
@@ -81,15 +90,32 @@ def map_dfs(df_mflp, df_mspd, df_map):
 
     df_mflp.drop(['max_qtr'], inplace=True, axis=1)
 
+    # add engineered columns to df_mflp
     df_mflp.columns = df_map[map_cols]
     df_mflp['published_date'] = pd.to_datetime(df_mflp['published_date'], errors='coerce')
+    df_mflp['freddie_held'] = 1.0
+    df_mflp['principal_paydown'] = df_mflp['original_balance'] - df_mflp['current_balance']
+    # define label to be loans beyond 60 days late and any that have defaulted in the past
+    df_mflp['label'] = [float(x) for x in df_mflp['loan_status'].isin([200,300,350,450])]
+    df_mflp.drop(['loan_status'], inplace=True, axis=1)
+    df_mflp.to_csv(datadir + 'df_mflp_labeled' + '.csv')
+
+    # add engineered columns to df_mspd
     df_mspd.columns = df_map[map_cols]
     df_mspd['published_date'] = pd.to_datetime(df_mspd['published_date'], errors='coerce')
+    df_mspd['freddie_held'] = 0.0
+    df_mspd['principal_paydown'] = df_mspd['original_balance'] - df_mspd['current_balance']
+    # define label to be loans beyond 60 days late and any that have defaulted in the past
+    df_mspd['label'] = [float(x) for x in ((df_mspd['loan_status'].isin([200,300,350,450])) | (df_mspd['loan_id'].isin(prob_loan_ids)))]
+    df_mspd.drop(['loan_status'], inplace=True, axis=1)
+    df_mspd.to_csv(datadir + 'df_mspd_labeled' + '.csv')
 
     df_comb = pd.concat([df_mflp, df_mspd])
+    df_comb.drop(['current_balance', 'principal_paydown'], inplace=True, axis=1)
     df_comb.set_index(np.arange(df_comb.shape[0]), drop=True, inplace=True)
+    df_comb.to_csv(datadir + 'df_comb_labeled' + '.csv')
 
-    return df_comb
+    return df_mflp, df_mspd, df_comb
 
 ### Plot histograms for data columns
 def plot_histograms(df, columns, name='test', plotdir='plots/'):
@@ -165,9 +191,9 @@ def clean_mspd_data(df):
                 df[col] = pd.to_datetime(df[col], errors='coerce')
             except:
                 df[col] = df[col].astype(str)
-        ltv_col = df['uw_ltv'].replace('[%]','', regex=True)
-        ltv_col = ltv_col.astype(float)/100.
-        df['uw_ltv'] = ltv_col
+    ltv_col = df['uw_ltv'].replace('[%]','', regex=True)
+    ltv_col = np.divide(ltv_col.astype(float),100.)
+    df['uw_ltv'] = ltv_col
     special_svcr = [x.lower().replace(' ', '_') for x in df['special_servicer']]
     df['special_servicer'] = np.array(special_svcr)
     return df
@@ -180,14 +206,15 @@ if __name__ == '__main__':
     mspd_file = 'custom_rpt_all_properties_20170222.csv'
     ## Open Multifamily Loan Performance Data
     df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
-    df_mflp['special_svcr'] = 'freddie'
+    df_mflp['special_svcr'] = 'freddie_mac'
     # Clean DataFrame data
     # df_mflp = clean_df_data(df_mflp)
     ## Open Multifamily Securitization Program Data
     df_mspd = read_data_pandas(datadir + mspd_file)
     # Clean DataFrame data
     df_mspd = clean_mspd_data(df_mspd)
-    prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
+    df_mspd_o = df_mspd.copy()
+    df_mspd_o.to_csv('df_mspd_o.csv')
 
     ### map input tables to new output table for analysis
     # New table | MFLP table | MSPD table
@@ -198,29 +225,43 @@ if __name__ == '__main__':
     ['current_balance', 'amt_upb_endg', 'actual_balance'],
     ['original_balance', 'amt_upb_pch', 'original_note_amount'],
     ['property_state', 'code_st', 'state'],
-    ['o_int_rate', 'rate_int', 'note_rate'],
-    ['o_dsc_ratio', 'rate_dcr', 'dscr_(ncf)'],
-    ['o_ltv_ratio', 'rate_ltv', 'uw_ltv'],
+    ['orig_int_rate', 'rate_int', 'note_rate'],
+    ['orig_dscr', 'rate_dcr', 'uw_dscr_(ncf)amortizing'],
+    ['orig_ltv', 'rate_ltv', 'uw_ltv'],
     ['special_servicer', 'special_svcr', 'special_servicer']]
 
     df_map = pd.DataFrame(data=col_map_a, columns=['col_a', 'mflp_col', 'mspd_col'], index=np.arange(len(col_map_a)))
 
-    df_comb = map_dfs(df_mflp, df_mspd, df_map)
+    df_mflp, df_mspd, df_comb = map_dfs(df_mflp, df_mspd, df_map)
 
-    # add engineered columns
-    df_comb['principal_paydown'] = df_comb['original_balance'] - df_comb['current_balance']
+    # add additional columns to df_mspd (securitized set)
+    df_mspd['orig_occ_rate'] = df_mspd_o['original_occupancy__rate']
+    df_mspd['most_rct_occ_rate'] = df_mspd_o['most_recentphys_occup']
+    df_mspd['occ_rate_delta'] = df_mspd['most_rct_occ_rate'] - df_mspd['orig_occ_rate']
 
-    # define label to be loans beyond 60 days late and any that have defaulted in the past
-    df_comb['label'] = [float(x) for x in ((df_comb['loan_status'].isin([200,300,450])) | ((df_comb['special_servicer']=='freddie') & (df_comb['loan_id'].isin(prob_loan_ids))))]
+    df_mspd['orig_noi'] = df_mspd_o['noi_at_contribution']
+    df_mspd['most_rct_noi'] = df_mspd_o['most_recent_noi']
+    df_mspd['noi_delta'] = df_mspd['most_rct_noi'] - df_mspd['orig_noi']
 
-    df_comb.drop(['loan_id', 'loan_status'], inplace=True, axis=1)
-    df_comb.to_csv(datadir + 'df_labeled' + '.csv')
+    df_mspd['most_rct_value'] = df_mspd_o['most_recent_value']
+    df_mspd['orig_value'] = df_mspd['original_balance'] / df_mspd['orig_ltv']
+    df_mspd['orig_value'][df_mspd['orig_ltv']==0] = df_mspd['most_rct_value']
+    df_mspd['value_delta'] = df_mspd['most_rct_value'] - df_mspd['orig_value']
 
-    ### Print table for md file
-    #print_df_md_table(df_mflp)
-    # print_df_md_table(df_mspd)
+    df_mspd['most_rct_ltv'] = df_mspd['current_balance'] / df_mspd['most_rct_value']
+    df_mspd['ltv_delta'] = df_mspd['most_rct_ltv'] - df_mspd['orig_ltv']
 
-    #df_mdl = drop_cols(df_all)
+    df_mspd['most_rct_debt_serv'] = df_mspd_o['most_recent_debt_service_amount']
+    df_mspd['orig_debt_serv'] = df_mspd['orig_noi'] / df_mspd['orig_dscr']
+    df_mspd['debt_serv_delta'] = df_mspd['most_rct_debt_serv'] - df_mspd['orig_debt_serv']
+
+    df_mspd['most_rct_dscr'] = df_mspd_o['most_recentdscr_(ncf)']
+    df_mspd['dscr_delta'] = df_mspd['most_rct_dscr'] - df_mspd['orig_dscr']
+
+    df_mspd.to_csv(datadir + 'df_mspd_labeled_built_up.csv')
+
+
+
 
     # plot_hists = str(raw_input('Would you like to plot a histogram for each column? [y/n]'))
     #
