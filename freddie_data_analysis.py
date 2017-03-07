@@ -235,8 +235,8 @@ if __name__ == '__main__':
     df_mflp, df_mspd, df_comb = map_dfs(df_mflp, df_mspd, df_map)
 
     # add additional columns to df_mspd (securitized set)
-    df_mspd['orig_occ_rate'] = df_mspd_o['original_occupancy__rate']
-    df_mspd['most_rct_occ_rate'] = df_mspd_o['most_recentphys_occup']
+    df_mspd['orig_occ_rate'] = np.divide(df_mspd_o['original_occupancy__rate'], 100.)
+    df_mspd['most_rct_occ_rate'] = np.divide(df_mspd_o['most_recentphys_occup'], 100.)
     df_mspd['occ_rate_delta'] = df_mspd['most_rct_occ_rate'] - df_mspd['orig_occ_rate']
 
     df_mspd['orig_noi'] = df_mspd_o['noi_at_contribution']

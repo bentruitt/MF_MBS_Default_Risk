@@ -211,3 +211,7 @@ dlq_status_text_map = {
   '-':500, '60-89':200}
 df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in df_mspd['dlq_status_text']]  
 ** * Any values with a 500 were reverted to the highest previous value
+
+## Analysis
+
+Based on evaluation of loans foreclosed in the Freddie Mac portfolio, the average percentage of outstanding balance that is recovered following disposition is 0.6930486709.

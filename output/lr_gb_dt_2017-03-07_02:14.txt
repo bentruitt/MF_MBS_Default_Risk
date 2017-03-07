@@ -9,86 +9,86 @@ This is a randomly sampled training dataset with 10000 rows.
 
 This randomly sampled dataset is sampled with a ratio of 0.500000 true labeled samples.
 
-Optimal number of features for LogisticRegression: 77
+Optimal number of features for LogisticRegression: 58
 
 Top 15 Features:
-1). current_balance - 0.008243
-2). original_balance - 0.009401
-3). orig_int_rate - 0.010094
-4). freddie_held - 0.011236
-5). most_rct_occ_rate - 0.011559
-6). principal_paydown - 0.011662
-7). orig_occ_rate - 0.011688
-8). occ_rate_delta - 0.011693
-9). orig_noi - 0.011918
-10). orig_dscr - 0.011949
-11). orig_ltv - 0.012030
-12). most_rct_noi - 0.012293
-13). orig_value - 0.012428
-14). noi_delta - 0.012484
-15). value_delta - 0.012852
+1). current_balance - 0.008347
+2). original_balance - 0.009027
+3). orig_int_rate - 0.010156
+4). freddie_held - 0.012497
+5). principal_paydown - 0.012560
+6). orig_occ_rate - 0.012678
+7). orig_dscr - 0.013327
+8). orig_ltv - 0.013637
+9). most_rct_noi - 0.013818
+10). orig_noi - 0.013849
+11). occ_rate_delta - 0.013876
+12). state_CT - 0.014134
+13). noi_delta - 0.014402
+14). debt_serv_delta - 0.014411
+15). orig_value - 0.014414
 
-Optimal number of features for DecisionTreeClassifier: 16
+Optimal number of features for DecisionTreeClassifier: 78
 
 Top 15 Features:
 1). current_balance - 0.000000
 2). original_balance - 0.000000
-3). orig_dscr - 0.000000
-4). orig_ltv - 0.000000
-5). orig_occ_rate - 0.025000
-6). orig_int_rate - 0.026667
-7). principal_paydown - 0.026667
-8). freddie_held - 0.033333
-9). most_rct_occ_rate - 0.033333
-10). occ_rate_delta - 0.036364
-11). ss_cwcapital - 0.047719
-12). state_VA - 0.048889
-13). state_MA - 0.050196
-14). ss_trimont - 0.050196
-15). state_ND - 0.050794
+3). orig_int_rate - 0.000000
+4). orig_dscr - 0.000000
+5). orig_ltv - 0.000000
+6). freddie_held - 0.000000
+7). principal_paydown - 0.000000
+8). most_rct_occ_rate - 0.040000
+9). orig_occ_rate - 0.044444
+10). occ_rate_delta - 0.080000
+11). orig_noi - 0.080000
+12). most_rct_noi - 0.088889
+13). noi_delta - 0.088889
+14). most_rct_value - 0.100000
+15). orig_value - 0.119658
 
-Optimal number of features for GradientBoostingClassifier: 48
+Optimal number of features for GradientBoostingClassifier: 67
 
 Top 15 Features:
 1). current_balance - 0.000000
-2). orig_occ_rate - 0.000000
-3). principal_paydown - 0.000000
-4). freddie_held - 0.000000
-5). state_NH - 0.000000
-6). orig_dscr - 0.000000
-7). orig_int_rate - 0.000000
-8). original_balance - 0.000000
-9). orig_ltv - 0.000000
-10). noi_delta - 0.020000
-11). state_IN - 0.023529
-12). state_AR - 0.028571
-13). most_rct_noi - 0.028571
-14). state_AZ - 0.028571
-15). ss_berkadia - 0.036364
+2). orig_ltv - 0.000000
+3). orig_dscr - 0.021053
+4). orig_noi - 0.022222
+5). freddie_held - 0.028571
+6). occ_rate_delta - 0.030769
+7). value_delta - 0.030769
+8). orig_int_rate - 0.040000
+9). state_RI - 0.044444
+10). original_balance - 0.050000
+11). most_rct_occ_rate - 0.052101
+12). most_rct_noi - 0.059341
+13). ss_arbor_commercial_mortgage,_llc - 0.064935
+14). state_NJ - 0.066667
+15). state_CT - 0.071111
 
 LogisticRegression: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        2411  173  2584
-1.0           6    3     9
-All        2417  176  2593
+0.0        2352  232  2584
+1.0           5    4     9
+All        2357  236  2593
 
 DecisionTreeClassifier: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        2575    9  2584
-1.0           6    3     9
-All        2581   12  2593
+0.0        2582    2  2584
+1.0           8    1     9
+All        2590    3  2593
 
 GradientBoostingClassifier: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        2572   12  2584
-1.0           6    3     9
-All        2578   15  2593
+0.0        2564   20  2584
+1.0           7    2     9
+All        2571   22  2593
 
        Model            |  Accuracy     |    Precision     |      Recall
-    Logistic Regression:   0.930968           0.017045           0.333333
-    Decision Tree:         0.994215           0.250000           0.333333
-    Gradient Boosting:     0.993058           0.200000           0.333333
+    Logistic Regression:   0.908600           0.016949           0.444444
+    Decision Tree:         0.996143           0.333333           0.111111
+    Gradient Boosting:     0.989587           0.090909           0.222222
 Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
