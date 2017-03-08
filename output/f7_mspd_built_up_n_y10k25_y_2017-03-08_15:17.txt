@@ -1,0 +1,51 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7855, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+
+This is a randomly sampled training dataset with 10000 rows.
+
+This randomly sampled dataset is sampled with a ratio of 0.250000 true labeled samples.
+
+Optimal number of features for LogisticRegression: 50
+
+Top 15 Features:
+1). current_balance - 0.093338
+2). original_balance - 0.100434
+3). orig_int_rate - 0.107312
+4). orig_dscr - 0.116925
+5). orig_ltv - 0.124740
+6). principal_paydown - 0.127691
+7). orig_occ_rate - 0.131343
+8). most_rct_occ_rate - 0.131626
+9). most_rct_noi - 0.139517
+10). orig_noi - 0.141356
+11). occ_rate_delta - 0.141680
+12). most_rct_dscr - 0.141924
+13). state_HI - 0.142180
+14). value_delta - 0.142273
+15). orig_value - 0.142340
+
+LogisticRegression: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        1686  781  2467
+1.0          48   78   126
+All        1734  859  2593
+
+       Model            |  Accuracy     |    Precision     |      Recall    |       F1
+    Logistic Regression:   0.680293           0.090803           0.619048           0.354925
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Probability of default for Loan_ID: 504139525 is 0.6066
+
+1.  Loan ID: 820104747 / Balance: $22,635,317 / Default Prob: 1.0000 / Potential Loss: $6,947,854
+2.  Loan ID: 10073726 / Balance: $13,035,957 / Default Prob: 0.9983 / Potential Loss: $3,994,739
+3.  Loan ID: 302781015 / Balance: $26,243,727 / Default Prob: 0.9954 / Potential Loss: $8,018,618
+4.  Loan ID: 534402712 / Balance: $22,682,398 / Default Prob: 0.9928 / Potential Loss: $6,912,476
+5.  Loan ID: 10064065 / Balance: $70,000,000 / Default Prob: 0.9925 / Potential Loss: $21,326,207
+
+Total outstanding balance for all loans not already in default: $110,591,329,268
+Total potential loss for loans not already in default: $41,905,329,503 (37.892%)

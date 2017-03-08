@@ -1,0 +1,93 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7855, 92)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'freddie_held', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+
+This is a randomly sampled training dataset with 10000 rows.
+
+This randomly sampled dataset is sampled with a ratio of 0.250000 true labeled samples.
+
+####--------------------LogisticRegression Grid Search----------#####
+
+### Tuning hyper-parameters for f1
+Best parameters set found on development set for LogisticRegression: {'penalty': 'l1', 'C': 1.0, 'class_weight': None}
+Grid scores on development set:
+0.029 (+/-0.027) for {'penalty': 'l1', 'C': 1.0, 'class_weight': 'balanced'}
+0.280 (+/-0.463) for {'penalty': 'l1', 'C': 1.0, 'class_weight': None}
+0.033 (+/-0.054) for {'penalty': 'l1', 'C': 2500.0, 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l1', 'C': 2500.0, 'class_weight': None}
+0.034 (+/-0.056) for {'penalty': 'l1', 'C': 5000.0, 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l1', 'C': 5000.0, 'class_weight': None}
+0.034 (+/-0.056) for {'penalty': 'l1', 'C': 7500.0, 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l1', 'C': 7500.0, 'class_weight': None}
+0.034 (+/-0.056) for {'penalty': 'l1', 'C': 10000.0, 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l1', 'C': 10000.0, 'class_weight': None}
+0.025 (+/-0.021) for {'penalty': 'l2', 'C': 1.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.280 (+/-0.463) for {'penalty': 'l2', 'C': 1.0, 'solver': 'newton-cg', 'class_weight': None}
+0.030 (+/-0.029) for {'penalty': 'l2', 'C': 10.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.267 (+/-0.452) for {'penalty': 'l2', 'C': 10.0, 'solver': 'newton-cg', 'class_weight': None}
+0.037 (+/-0.043) for {'penalty': 'l2', 'C': 100.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.267 (+/-0.452) for {'penalty': 'l2', 'C': 100.0, 'solver': 'newton-cg', 'class_weight': None}
+0.034 (+/-0.059) for {'penalty': 'l2', 'C': 1000.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.213 (+/-0.352) for {'penalty': 'l2', 'C': 1000.0, 'solver': 'newton-cg', 'class_weight': None}
+0.034 (+/-0.059) for {'penalty': 'l2', 'C': 2000.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l2', 'C': 2000.0, 'solver': 'newton-cg', 'class_weight': None}
+0.034 (+/-0.059) for {'penalty': 'l2', 'C': 5000.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l2', 'C': 5000.0, 'solver': 'newton-cg', 'class_weight': None}
+0.034 (+/-0.059) for {'penalty': 'l2', 'C': 7500.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.213 (+/-0.352) for {'penalty': 'l2', 'C': 7500.0, 'solver': 'newton-cg', 'class_weight': None}
+0.035 (+/-0.059) for {'penalty': 'l2', 'C': 10000.0, 'solver': 'newton-cg', 'class_weight': 'balanced'}
+0.227 (+/-0.373) for {'penalty': 'l2', 'C': 10000.0, 'solver': 'newton-cg', 'class_weight': None}
+Detailed classification report: for LogisticRegression, f1
+The model is trained on the full development set.
+The scores are computed on the full evaluation set.
+             precision    recall  f1-score   support
+
+        0.0       1.00      1.00      1.00      2584
+        1.0       0.00      0.00      0.00         9
+
+avg / total       0.99      1.00      0.99      2593
+
+-----------------------------------------------------------
+Best parameters: {'f1': {'penalty': 'l1', 'C': 1.0, 'class_weight': None}}
+Optimal number of features for LogisticRegression: 90
+
+Top 15 Features:
+1). current_balance - 0.000000
+2). debt_serv_delta - 0.000000
+3). orig_debt_serv - 0.000000
+4). most_rct_debt_serv - 0.000000
+5). most_rct_ltv - 0.000000
+6). value_delta - 0.000000
+7). orig_value - 0.000000
+8). most_rct_value - 0.000000
+9). noi_delta - 0.000000
+10). most_rct_noi - 0.000000
+11). ltv_delta - 0.000000
+12). occ_rate_delta - 0.000000
+13). most_rct_occ_rate - 0.000000
+14). orig_occ_rate - 0.000000
+15). principal_paydown - 0.000000
+
+LogisticRegression: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2583    1  2584
+1.0           9    0     9
+All        2592    1  2593
+
+       Model            |  Accuracy     |    Precision     |      Recall    |       F1
+    Logistic Regression:   0.996143           0.000000           0.000000           0.000000
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Probability of default for Loan_ID: 504139525 is 6.5e-05
+
+1.  Loan ID: 10081445 / Balance: $30,897,193 / Default Prob: 0.4043 / Potential Loss: $3,833,967
+2.  Loan ID: 30309058 / Balance: $1,776,700 / Default Prob: 0.3775 / Potential Loss: $205,866
+3.  Loan ID: 10063232 / Balance: $131,745,169 / Default Prob: 0.2865 / Potential Loss: $11,586,613
+4.  Loan ID: 30309087 / Balance: $8,400,000 / Default Prob: 0.2055 / Potential Loss: $529,883
+5.  Loan ID: 932414400 / Balance: $2,050,371 / Default Prob: 0.2040 / Potential Loss: $128,361
+
+Total potential loss for loans not already in default: $267,206,438

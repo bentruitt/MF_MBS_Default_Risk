@@ -164,14 +164,16 @@ def bootstrap_it(X, y, data_set_size=10000, true_proportion=.25):
 if __name__ == '__main__':
 
     plot_dir = 'plots/'
-    trial = '_f6'
+    trial = '_f7'
     datadir = 'data/'
+    drop_freddie = False
     start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
     ### Select dataset to run
     file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
     for i, option in enumerate(file_options):
         selected = str(raw_input("Would you like to open %s?[y/n]" % option))
         if selected == 'y':
+            if 'comb' not in option: drop_freddie = True
             file_to_load = option + '.csv'
             break
     if selected != 'y':
@@ -187,6 +189,8 @@ if __name__ == '__main__':
 
     ### Load the dataset in with pandas and refine columns
     df = load_data(datadir + file_to_load)
+    if drop_freddie:
+        df.drop(['freddie_held'], axis=1, inplace=True)
     print_file.write("\nShape of DataFrame: (%d, %d)\n" % df.shape)
     print_file.write("Features in Dataset:\n")
     print_file.write(str(df.columns.tolist()))
@@ -484,6 +488,8 @@ if __name__ == '__main__':
     for i, loan in enumerate(top_m_loan_ids):
         print_file.write("\n%d.  Loan ID: %d / Balance: %s / Default Prob: %0.4f / Potential Loss: %s" % (i+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[i]), top_m_probs[i], '${:,.0f}'.format(df_top_m['current_balance'].iloc[i] * top_m_probs[i] * 0.3069513291)))
     tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)
-    print_file.write("\n\nTotal potential loss for loans not already in default: %s" % ('${:,.0f}'.format(tot_pot_loss)))
+    tot_bal = df_nondef['current_balance'].sum()
+    print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
+    print_file.write("\nTotal potential loss for loans not already in default: %s (%s)" % ('${:,.0f}'.format(tot_pot_loss), "{0:.3f}%".format(float(tot_pot_loss)/float(tot_bal) * 100.)))
 
     print_file.close()

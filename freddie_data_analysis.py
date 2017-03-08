@@ -32,7 +32,7 @@ def read_data_csv(filename):
 ### Process Columns
 def map_dfs(df_mflp, df_mspd, df_map):
 
-    prob_loan_ids = df_mspd['loan_id'][df_mspd['no_time_dlqlife']>0].tolist()
+    prob_loan_ids = df_mspd['loan_id'][(df_mspd['no_time_dlqlife']>0) | (df_mspd['date_added_to_servicer_watchlist_']!="-")].tolist()
 
     map_cols, mflp_cols, mspd_cols = df_map.columns.tolist()
 
