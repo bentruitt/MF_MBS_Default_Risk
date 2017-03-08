@@ -5,6 +5,7 @@ from pdb import set_trace
 import random
 from roc import plot_roc
 from scipy import interp
+from collections import Counter
 from sklearn.cross_validation import train_test_split, StratifiedKFold
 from sklearn.feature_selection import RFECV
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
@@ -243,7 +244,7 @@ if __name__ == '__main__':
     best_parameters_gb = {}
 
     run_lr = bool(raw_input("Run LogisticRegression?[y/n]")=='y')
-    if run_lf:
+    if run_lr:
         run_grid_search_lr = bool(raw_input("Run LogisticRegression GridSearchCV?[y/n]")=='y')
 
     run_dt = bool(raw_input("Run DecisionTree?[y/n]")=='y')
@@ -261,12 +262,12 @@ if __name__ == '__main__':
             tuned_parameters = [{
             'penalty': ['l1'],
             'C': [1., 2500., 5000., 7500., 10000.],
-            'class_weight': ['balanced']
+            'class_weight': ['balanced', None]
             }, {
             'penalty': ['l2'],
             'solver': ['newton-cg'],
             'C': [1., 10., 100., 1000., 2000., 5000., 7500., 10000.],
-            'class_weight': ['balanced']
+            'class_weight': ['balanced', None]
             }]
 
             best_parameters_lr = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
@@ -474,12 +475,15 @@ if __name__ == '__main__':
     X_nondef = X_t[nondef]
     loans_nondef = loan_ids[nondef]
     df_nondef = df[nondef]
+    df_nondef = df_nondef.reset_index(drop=True)
     y_probs_nd = lr.predict_proba(X_nondef)[:,1]
     srt_idx = np.argsort(y_probs_nd)[::-1]
     top_m_probs = y_probs_nd[srt_idx][:m]
     top_m_loan_ids = loans_nondef[srt_idx][:m]
-    df_top_m = df_nondef[srt_idx].iloc[:m,:]
+    df_top_m = df_nondef.iloc[srt_idx]
     for i, loan in enumerate(top_m_loan_ids):
-        print_file.write("%d.  Loan ID: %d / Balance: %d / Default Prob: %0.4f / Potential Loss: %0.2f" % (i+1, loan, df_top_m['current_balance'].iloc[i], top_m_probs[i]), (df_top_m['current_balance'].iloc[i] * top_m_probs[i] * 0.3069513291))
+        print_file.write("\n%d.  Loan ID: %d / Balance: %s / Default Prob: %0.4f / Potential Loss: %s" % (i+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[i]), top_m_probs[i], '${:,.0f}'.format(df_top_m['current_balance'].iloc[i] * top_m_probs[i] * 0.3069513291)))
+    tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)
+    print_file.write("\n\nTotal potential loss for loans not already in default: %s" % ('${:,.0f}'.format(tot_pot_loss)))
 
     print_file.close()
