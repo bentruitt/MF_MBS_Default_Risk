@@ -475,6 +475,7 @@ if __name__ == '__main__':
     ## percent of loan balance recovered following foreclosure 0.6930486709
     ## percent of loan balance lost following foreclosure 0.3069513291
     m = 5
+    loss_pct = 0.3069513291
     nondef = y==0
     X_nondef = X_t[nondef]
     loans_nondef = loan_ids[nondef]
@@ -486,8 +487,8 @@ if __name__ == '__main__':
     top_m_loan_ids = loans_nondef[srt_idx][:m]
     df_top_m = df_nondef.iloc[srt_idx]
     for i, loan in enumerate(top_m_loan_ids):
-        print_file.write("\n%d.  Loan ID: %d / Balance: %s / Default Prob: %0.4f / Potential Loss: %s" % (i+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[i]), top_m_probs[i], '${:,.0f}'.format(df_top_m['current_balance'].iloc[i] * top_m_probs[i] * 0.3069513291)))
-    tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)
+        print_file.write("\n%d.  Loan ID: %d / Balance: %s / Default Prob: %0.4f / Potential Loss: %s" % (i+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[i]), top_m_probs[i], '${:,.0f}'.format(df_top_m['current_balance'].iloc[i] * top_m_probs[i] * loss_pct)))
+    tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)*loss_pct
     tot_bal = df_nondef['current_balance'].sum()
     print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
     print_file.write("\nTotal potential loss for loans not already in default: %s (%s)" % ('${:,.0f}'.format(tot_pot_loss), "{0:.3f}%".format(float(tot_pot_loss)/float(tot_bal) * 100.)))
