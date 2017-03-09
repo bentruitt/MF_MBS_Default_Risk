@@ -21,13 +21,15 @@ from datetime import datetime
 random.seed(1234)
 
 ### Run random forest in comparison to logistic regression, decision tree, SVM, and #Naive Bayes
-def get_scores(classifier, X_train, X_test, y_train, y_test, **kwargs):
-    model = classifier(**kwargs)
-    model.fit(X_train, y_train)
-    y_predict = model.predict(X_test)
-    return model.score(X_test, y_test), \
-           precision_score(y_test, y_predict), \
-           recall_score(y_test, y_predict)
+def get_scores(model, X_test, y_train, y_test, y_pred):
+    accuracy = model.score(X_test, y_test)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1_score = (precision + recall) / 2.
+    return accuracy, \
+           precision, \
+           recall, \
+           f1_score
 
 ### Load data that was prepared by freddie_data_analysis module
 def load_data(in_file):
@@ -166,10 +168,12 @@ if __name__ == '__main__':
     plot_dir = 'plots/'
     trial = '_f7'
     datadir = 'data/'
+    file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
+    model_options = ['LogisticRegression', 'DecisionTreeClassifier', 'GradientBoostingClassifier']
     drop_freddie = False
     start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
+
     ### Select dataset to run
-    file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
     for i, option in enumerate(file_options):
         selected = str(raw_input("Would you like to open %s?[y/n]" % option))
         if selected == 'y':
@@ -180,11 +184,12 @@ if __name__ == '__main__':
         print("Pickers can't be choosie! You get %s:)" % file_options[0])
         file_to_load = file_options[0] + '.csv'
 
+    ### set trial name for file names
     trial += "_" + file_to_load.split("_")[1]
     if len(file_to_load.split("_"))>3: trial += "_" + "_".join(file_to_load.split(".")[0].split("_")[3:5])
 
     ### Open file for printing output
-    print_file = open("output/" + "lr_gb_dt_" + start_time + ".txt", "w")
+    print_file = open("output/" + trial + start_time + ".txt", "w")
     print_file.write("This analysis was run on the dataset from %s.\n" % (datadir + file_to_load))
 
     ### Load the dataset in with pandas and refine columns
@@ -195,39 +200,44 @@ if __name__ == '__main__':
     print_file.write("Features in Dataset:\n")
     print_file.write(str(df.columns.tolist()))
     print_file.write("\n")
+
     ### Seperate labels and feature data
-    ### Make a numpy array called y containing the default labels
+    ## Make a numpy array called y containing the default labels
     y = df.pop('label').values
-    ### Make a numpy array containing 'loan_id' columns
+    ## Make a numpy array containing 'loan_id' columns
     loan_ids = df.pop('loan_id').values
-    ### Make a 2 dimensional numpy array containing the feature data (everything except #the labels)
+    ## Make a 2 dimensional numpy array containing the feature data (everything except #the labels)
     X = df.values
 
     ### Randomly sample data to adjust proportion of true values by oversampling
-    boot_y_n_bef = str(raw_input("Would you like to randomly sample by class weighting before train_test_split?"))
-    trial += "_" + boot_y_n_bef
-    if boot_y_n_bef == 'y':
+    boot_y = bool(raw_input("Would you like to randomly sample by class weighting?")=='y')
+    trial += "_" + "boot_"
+    if boot_y:
         data_set_size = int(raw_input("How large of a dataset would you like to create by random sampling?"))
         true_proportion = float(raw_input("What proportion would you like to be true values?[0.xxx]"))
-        X_bs, y_bs = bootstrap_it(X, y, data_set_size, true_proportion)
-        X, y = X_bs, y_bs
-        print_file.write("\n\nThis is a randomly sampled dataset of %d rows.\n" % data_set_size)
-        print_file.write("\nThis randomly sampled dataset is sampled with a ratio of %f true labeled samples.\n" % true_proportion)
-
-    ### Use sklearn's train_test_split to split into train and test set
-    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
-    orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
-
-    if boot_y_n_bef == 'n':
-        boot_y_n_aft = str(raw_input("Would you like to randomly sample by class weighting after train_test_split?"))
-        trial += "_" + boot_y_n_aft
-        if boot_y_n_aft == 'y':
-            data_set_size = int(raw_input("How large of a train dataset would you like to create by random sampling?"))
-            true_proportion = float(raw_input("What proportion would you like to be true values?[0.xxx]"))
+        boot_y_bef = bool(raw_input("Would you like to randomly sample by class weighting before train_test_split?")=='y')
+        if boot_y_bef:
+            trial += "_" + "bef_"
+            ## Boostrap random samples
+            X_bs, y_bs = bootstrap_it(X, y, data_set_size, true_proportion)
+            X, y = X_bs, y_bs
+            ##  Use sklearn's train_test_split to split into train and test set
+            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
+            orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
+        else:
+            trial += "_" + "aft_"
+            ## Use sklearn's train_test_split to split into train and test set
+            X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
+            orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
+            ## Boostrap random samples
             X_bs, y_bs = bootstrap_it(X_train, y_train, data_set_size, true_proportion)
             X_train, y_train = X_bs, y_bs
-            print_file.write("\n\nThis is a randomly sampled training dataset with %d rows.\n" % data_set_size)
-            print_file.write("\nThis randomly sampled dataset is sampled with a ratio of %f true labeled samples.\n" % true_proportion)
+        print_file.write("\n\nThis is a randomly sampled training dataset with %d rows.\n" % data_set_size)
+        print_file.write("\nThis randomly sampled dataset is sampled with a ratio of %f true labeled samples.\n" % true_proportion)
+    else:
+        ## Use sklearn's train_test_split to split into train and test set
+        X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
+        orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
 
     ### Apply StandardScaler
     apply_scaler = str(raw_input("Would you like to apply StandardScaler to X?[y/n]"))
@@ -242,28 +252,23 @@ if __name__ == '__main__':
 
     ### Check which models and grid searches to run
     scores = ['f1'] # 'precision_macro', 'recall_macro', 'f1_weighted'
+    run_y = []
+    grid_y = []
     models = []
     best_parameters_lr = {}
     best_parameters_dt = {}
     best_parameters_gb = {}
 
-    run_lr = bool(raw_input("Run LogisticRegression?[y/n]")=='y')
-    if run_lr:
-        run_grid_search_lr = bool(raw_input("Run LogisticRegression GridSearchCV?[y/n]")=='y')
-
-    run_dt = bool(raw_input("Run DecisionTree?[y/n]")=='y')
-    if run_dt:
-        run_grid_search_dt = bool(raw_input("Run DecisionTree GridSearchCV?[y/n]")=='y')
-
-    run_gb = bool(raw_input("Run GradientBoosting?[y/n]")=='y')
-    if run_gb:
-        run_grid_search_gb = bool(raw_input("Run GradientBoosting GridSearchCV?[y/n]")=='y')
+    for i, model in enumerate(model_options):
+        run_y.append(bool(raw_input("Run %s?[y/n]" %(model))=='y'))
+        if run_y[i]:
+            grid_y.append((raw_input("Run %s GridSearchCV?[y/n]" %(model))=='y'))
 
     ### Build LogisticRegression model
     # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
-    if run_lr:
-        if run_grid_search_lr:
-            tuned_parameters = [{
+    if run_y[0]:
+        if grid_y[0]:
+            tuned_parameters_lr = [{
             'penalty': ['l1'],
             'C': [1., 2500., 5000., 7500., 10000.],
             'class_weight': ['balanced', None]
@@ -291,8 +296,8 @@ if __name__ == '__main__':
 
     ### Build DecisionTreeClassifier model
     # DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_split=1e-07, class_weight=None, presort=False)
-    if run_dt:
-        if run_grid_search_dt:
+    if run_y[1]:
+        if grid_y[1]:
             tuned_parameters = [{
             'criterion': ['gini'],
             'splitter': ['best', 'random'],
@@ -324,8 +329,8 @@ if __name__ == '__main__':
 
     ### Build GradientBoostingClassifier model
     # GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
-    if run_gb:
-        if run_grid_search_gb:
+    if run_y[2]:
+        if grid_y[2]:
             tuned_parameters = [{
             'loss': ['deviance'], # ,'exponential'
             'n_estimators': [100], # 50, 200
@@ -447,23 +452,23 @@ if __name__ == '__main__':
         plt.close()
 
     print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall    |       F1")
-    if run_lr:
-        print_file.write("\n    Logistic Regression:   %f           %f           %f           %f" % (lr.score(X_test, y_test), precision_score(y_test, y_pred[0]), recall_score(y_test, y_pred[0]), (precision_score(y_test, y_pred[0]) + recall_score(y_test, y_pred[0]))/2.))
-    if run_dt:
-        print_file.write("\n    Decision Tree:         %f           %f           %f           %f" % (dt.score(X_test, y_test), precision_score(y_test, y_pred[1]), recall_score(y_test, y_pred[1]), (precision_score(y_test, y_pred[1]) + recall_score(y_test, y_pred[1]))/2.))
-    if run_gb:
-        print_file.write("\n    Gradient Boosting:     %f           %f           %f           %f" % (gb.score(X_test, y_test), precision_score(y_test, y_pred[2]), recall_score(y_test, y_pred[2]), (precision_score(y_test, y_pred[2]) + recall_score(y_test, y_pred[2]))/2.))
+    if run_y[0]:
+        print_file.write("\n    Logistic Regression:   %f           %f           %f           %f" % (get_scores(lr, X_test, y_train, y_test, y_pred[0])))
+    if run_y[1]:
+        print_file.write("\n    Decision Tree:         %f           %f           %f           %f" % (get_scores(dt, X_test, y_train, y_test, y_pred[0])))
+    if run_y[2]:
+        print_file.write("\n    Gradient Boosting:     %f           %f           %f           %f" % (get_scores(gb, X_test, y_train, y_test, y_pred[0])))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
     print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.\n")
     ## LogisticRegression ROC plot
-    if run_lr:
+    if run_y[0]:
         plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=lr)
     ## DecisionTreeClassifier ROC plot
-    if run_dt:
+    if run_y[1]:
         plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=dt)
     ## GradientBoostingClassifier ROC plot
-    if run_gb:
+    if run_y[2]:
         plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=gb)
 
     ### Print probability of particular loan_id
