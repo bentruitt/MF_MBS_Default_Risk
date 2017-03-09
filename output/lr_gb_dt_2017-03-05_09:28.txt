@@ -1,3 +1,0 @@
-Optimal number of features for 0001, verbose=0, warm_start=False): 52
-Top 15 Features:
-1). current_balance - 0.0172952). original_balance - 0.0182303). o_int_rate - 0.0194664). o_ltv_ratio - 0.0199655). freddie_held - 0.0205686). principal_paydown - 0.0231637). o_dsc_ratio - 0.0235888). state_AK - 0.0260569). state_KY - 0.02949010). state_KS - 0.02950711). state_IN - 0.02974412). state_IL - 0.03018413). state_AL - 0.03029214). state_ID - 0.03031515). state_LA - 0.030419
