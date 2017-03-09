@@ -4,7 +4,7 @@
 The focus of this analysis is to approximate the probability of default for multifamily mortgages. I have worked in the area of multifamily lending for about 10 years. I have done everything from underwrite to originate to the sale of securities to large investment banks that would re-securitize the loans for consumers such as large institutional investors and hedge funds.
 
 <div style="float: right; width: 40%;">
-    ![1600 Glenarm Place](/img/thumbs_1600-Glenarm-002.jpg)
+    ![1600 Glenarm Place](https:github.com/bentruitt/MF_MBS_Default_Risk/img/thumbs_1600-Glenarm-002.jpg)
 </div>
 
 The loan data that I will be using for this analysis represents the performance of Freddie Mac multifamily loans. Freddie Mac is the nickname used for the Federal Home Loan Mortgage Corporation (FHLMC). Freddie Mac works in partnership with a network of nationwide lenders to provide loans for both single-family and multifamily mortgages. A single-family property is defined as 1-4 units. A single-family mortgage is what you think of if you were to get a mortgage on your home. You may already have a Freddie Mac mortgage and not know it. A multifamily mortgage is what is provided for an apartment building or complex. A multifamily property is 5 units or more. An example of a multifamily property is 1600 Glenarm Place in Denver, CO. The focus of this analysis will be only multifamily mortgages.
