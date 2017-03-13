@@ -11,9 +11,7 @@ The loan data that I will be using for this analysis represents the performance 
 
 ### U.S. Government Implicit Guarantee
 
-<div style="float: right; width: 60%;">
-  <img src="/img/investor-presentation.pdf.jpg" alt="Freddie Fed Bailout">
-</div>
+<img align="right" src="/img/investor-presentation.pdf.jpg" alt="Freddie Fed Bailout" width=60%>
 
 During the financial crisis in 2008, Freddie Mac received a bailout from the U.S. Government due to defaulting mortgages in their portfolio. Freddie Mac was given a loan for $71.3 Billion. Since this time, Freddie Mac has repaid $105.9 Billion in dividends. When the U.S. Government bailed-out Freddie Mac, the statement was made that Freddie Mac was "too big to fail" and had the implicit guarantee of the U.S. Government. Investors now began buying Freddie Mac mortgage securities as if they had no default risk. This reduced the interest rate required by investors to less than what would be required if the loan were made by a normal bank.
 
@@ -26,9 +24,7 @@ This does not look like a significant difference; however, let's assume you were
 
 ### Why Freddie Mac
 
-<div style="float: right; width: 50%;">
-  <img src="/img/freddie-mac-to-pay-treasury-4-5-billion-after-reporting-profit.jpg" alt="Freddie Fed Big Payment">
-</div>
+<img align="right" src="/img/freddie-mac-to-pay-treasury-4-5-billion-after-reporting-profit.jpg" alt="Freddie Fed Big Payment" width=50%>
 
 The political climate and public opinion has shifted. Freddie Mac appears to be standing on their own two feet and the implicit guarantee does not seem as necessary, in particular, now that Freddie Mac has paid back their loan. It is quite possible that the U.S. Government's implicit guarantee could be removed.
 
