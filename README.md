@@ -4,7 +4,7 @@
 The focus of this analysis is to approximate the probability of default for multifamily mortgages. I have worked in the area of multifamily lending for about 10 years. I have done everything from underwrite to originate to the sale of securities to large investment banks that would re-securitize the loans for consumers such as large institutional investors and hedge funds.
 
 <div style="float: right; width: 40%;">
-    ![1600 Glenarm Place](/img/thumbs_1600-Glenarm-002.jpg)
+  <img src="/img/thumbs_1600-Glenarm-002.jpg" alt="1600 Glenarm Place">
 </div>
 
 The loan data that I will be using for this analysis represents the performance of Freddie Mac multifamily loans. Freddie Mac is the nickname used for the Federal Home Loan Mortgage Corporation (FHLMC). Freddie Mac works in partnership with a network of nationwide lenders to provide loans for both single-family and multifamily mortgages. A single-family property is defined as 1-4 units. A single-family mortgage is what you think of if you were to get a mortgage on your home. You may already have a Freddie Mac mortgage and not know it. A multifamily mortgage is what is provided for an apartment building or complex. A multifamily property is 5 units or more. An example of a multifamily property is 1600 Glenarm Place in Denver, CO. The focus of this analysis will be only multifamily mortgages.
@@ -14,7 +14,7 @@ The loan data that I will be using for this analysis represents the performance 
 ### U.S. Government Implicit Guarantee
 
 <div style="float: right; width: 60%;">
-    ![Freddie Fed Bailout](/img/investor-presentation.pdf.jpg)
+  <img src="/img/investor-presentation.pdf.jpg" alt="Freddie Fed Bailout">
 </div>
 
 During the financial crisis in 2008, Freddie Mac received a bailout from the U.S. Government due to defaulting mortgages in their portfolio. Freddie Mac was given a loan for $71.3 Billion. Since this time, Freddie Mac has repaid $105.9 Billion in dividends. When the U.S. Government bailed-out Freddie Mac, the statement was made that Freddie Mac was "too big to fail" and had the implicit guarantee of the U.S. Government. Investors now began buying Freddie Mac mortgage securities as if they had no default risk. This reduced the interest rate required by investors to less than what would be required if the loan were made by a normal bank.
@@ -29,7 +29,7 @@ This does not look like a significant difference; however, let's assume you were
 ### Why Freddie Mac
 
 <div style="float: right; width: 50%;">
-    ![Freddie Fed Big Payment](/img/freddie-mac-to-pay-treasury-4-5-billion-after-reporting-profit.jpg)
+  <img src="/img/freddie-mac-to-pay-treasury-4-5-billion-after-reporting-profit.jpg" alt="Freddie Fed Big Payment">
 </div>
 
 The political climate and public opinion has shifted. Freddie Mac appears to be standing on their own two feet and the implicit guarantee does not seem as necessary, in particular, now that Freddie Mac has paid back their loan. It is quite possible that the U.S. Government's implicit guarantee could be removed.
