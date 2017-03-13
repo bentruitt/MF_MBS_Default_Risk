@@ -45,4 +45,5 @@ There are many likely to be affected by a removal of the U.S. Government's impli
 
 ## Analysis
 
+### Teaser
 Based on evaluation of loans foreclosed in the Freddie Mac portfolio, the average percentage of outstanding balance that is recovered following disposition is 0.6930486709.

@@ -255,6 +255,7 @@ if __name__ == '__main__':
     run_y = []
     grid_y = []
     models = []
+    model_nms = []
     best_parameters_lr = {}
     best_parameters_dt = {}
     best_parameters_gb = {}
@@ -326,7 +327,6 @@ if __name__ == '__main__':
         dt.fit(X_train, y_train)
         models.append(dt)
 
-
     ### Build GradientBoostingClassifier model
     # GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
     if run_y[2]:
@@ -365,43 +365,46 @@ if __name__ == '__main__':
         gb.fit(X_train, y_train)
         models.append(gb)
 
+    ### Create list of used model names as model_nms
+    for model in models:
+        model_nms.append(str(model).split('(')[0])
+
     ### Create StratifiedKFold generator
     cv = StratifiedKFold(y, n_folds=5, shuffle=True)
 
     #### Determine optimal number of features
     n = 15 # number of features to list
-    for model in models:
-        model_nm = str(model).split('(')[0]
+    for i, model in enumerate(models):
         rfecv = RFECV(estimator=model, step=1, cv=cv, scoring='f1')
         try:
             rfecv.fit(X_t, y)
         except:
             set_trace()
-        print_file.write("\nOptimal number of features for %s: %d" % (model_nm, rfecv.n_features_))
+        print_file.write("\nOptimal number of features for %s: %d" % (model_nms[i], rfecv.n_features_))
         srt_idx = np.argsort(rfecv.grid_scores_)
         srted_scores = rfecv.grid_scores_[srt_idx]
         srted_columns = df.columns[srt_idx]
         print_file.write("\n\nTop %d Features:\n" % n)
-        for i in range(n):
-            print_file.write("%d). %s - %f\n" % (i+1, srted_columns[i], srted_scores[i]))
+        for j in range(n):
+            print_file.write("%d). %s - %f\n" % (j+1, srted_columns[j], srted_scores[j]))
         ### Plot number of features VS. cross-validation scores
         plt.figure()
         plt.xlabel("Number of features selected")
         plt.ylabel("Cross validation score (nb of correct classifications)")
         plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
         plt.tight_layout()
-        plt.savefig(plot_dir + 'nm_feat_plot_' + model_nm + trial + '.png')
+        plt.savefig(plot_dir + 'nm_feat_plot_' + model_nms[i] + trial + '.png')
         plt.close()
         ### Plot feature importances
         max_bar = srted_scores[:n].max()
         plt.figure()
-        plt.title("Importance of Each Feature for %s" % (model_nm))
+        plt.title("Importance of Each Feature for %s" % (model_nms[i]))
         plt.bar(range(n), np.subtract(max_bar, srted_scores[:n]), color="g", align="center")
         plt.xticks(range(n), srted_columns[:n], rotation=75)
         plt.ylabel("Importance")
         plt.xlim([-1, n])
         plt.tight_layout()
-        plt.savefig(plot_dir + "feat_imp_" + model_nm  + trial + ".png")
+        plt.savefig(plot_dir + "feat_imp_" + model_nms[i]  + trial + ".png")
         plt.close()
         ### Plot histograms of data for top n features
         top_nm = 6
@@ -416,7 +419,7 @@ if __name__ == '__main__':
         # plt.xlim([-0.05e9 , .2e9])
         # plt.axis([0.0, 2.0, 0.0, 1.10])
         # plt.grid(True)
-        plt.savefig(plot_dir + "top_feat_hists_" + model_nm  + trial + ".png")
+        plt.savefig(plot_dir + "top_feat_hists_" + model_nms[i]  + trial + ".png")
         plt.close()
 
     ### Draw a confusion matrixes for the results
@@ -425,24 +428,22 @@ if __name__ == '__main__':
     y_prob = []
     y_pred = []
     for i, model in enumerate(models):
-        model_nm = str(model).split("(")[0]
         y_prob.append(model.predict_proba(X_test)[:,1])
         if use_prob:
             threshold = .5
             y_pred.append((y_prob[i] > threshold).astype(float))
         else:
             y_pred.append(model.predict(X_test))
-        print_file.write("\n%s: confusion matrix:\n" % model_nm)
+        print_file.write("\n%s: confusion matrix:\n" % model_nms[i])
         print_file.write(str(pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)))
         print_file.write("\n")
 
     ### Plot histogram of default probabilities
     y_prob_use = []
+    prob_threshold = .01
     for i in range(len(models)):
-        y_prob_use.append(y_prob[i][y_prob[i]>.01])
-    model_names = ['LogisticRegression', 'DecisionTree', 'GradientBoosting']
-    for i in range(len(models)):
-        prob_dict = {model_names[i]: y_prob_use[i]}
+        y_prob_use.append(y_prob[i][y_prob[i]>prob_threshold])
+        prob_dict = {model_nms[i]: y_prob_use[i]}
         df_prob = pd.DataFrame(prob_dict)
         plt.figure()
         df_prob.plot.hist(alpha=0.75, bins=50, grid=True)
@@ -452,29 +453,20 @@ if __name__ == '__main__':
         plt.close()
 
     print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall    |       F1")
-    if run_y[0]:
-        print_file.write("\n    Logistic Regression:   %f           %f           %f           %f" % (get_scores(lr, X_test, y_train, y_test, y_pred[0])))
-    if run_y[1]:
-        print_file.write("\n    Decision Tree:         %f           %f           %f           %f" % (get_scores(dt, X_test, y_train, y_test, y_pred[0])))
-    if run_y[2]:
-        print_file.write("\n    Gradient Boosting:     %f           %f           %f           %f" % (get_scores(gb, X_test, y_train, y_test, y_pred[0])))
+    for i, model in enumerate(models):
+        print_file.write("\n    %s   %f           %f           %f           %f" % (model_nms[i],get_scores(lr, X_test, y_train, y_test, y_pred[i])))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
     print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.\n")
-    ## LogisticRegression ROC plot
-    if run_y[0]:
-        plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=lr)
-    ## DecisionTreeClassifier ROC plot
-    if run_y[1]:
-        plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=dt)
-    ## GradientBoostingClassifier ROC plot
-    if run_y[2]:
-        plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=gb)
+    for model in models:
+        plot_roc_curve(X=X, y=y, plot_dir=plot_dir, trial=trial, cv=cv, model=model)
 
     ### Print probability of particular loan_id
     check_id = 504139525
-    id_prob = lr.predict_proba(X_t[loan_ids == check_id][0])[:,1]
-    print_file.write("\nProbability of default for Loan_ID: %d is %0.4g\n" % (check_id, id_prob))
+    for i, model in enumerate(models):
+        id_prob = model.predict_proba(X_t[loan_ids == check_id][0])[:,1]
+        print_file.write("\nUsing model: %s" % model_nms[i])
+        print_file.write("\nProbability of default for Loan_ID: %d is %0.4g\n" % (check_id, id_prob))
 
     ### Print top 'm' loans that have highest default probability, but not currently flagged
     ## percent of loan balance recovered following foreclosure 0.6930486709
@@ -486,16 +478,19 @@ if __name__ == '__main__':
     loans_nondef = loan_ids[nondef]
     df_nondef = df[nondef]
     df_nondef = df_nondef.reset_index(drop=True)
-    y_probs_nd = lr.predict_proba(X_nondef)[:,1]
-    srt_idx = np.argsort(y_probs_nd)[::-1]
-    top_m_probs = y_probs_nd[srt_idx][:m]
-    top_m_loan_ids = loans_nondef[srt_idx][:m]
-    df_top_m = df_nondef.iloc[srt_idx]
-    for i, loan in enumerate(top_m_loan_ids):
-        print_file.write("\n%d.  Loan ID: %d / Balance: %s / Default Prob: %0.4f / Potential Loss: %s" % (i+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[i]), top_m_probs[i], '${:,.0f}'.format(df_top_m['current_balance'].iloc[i] * top_m_probs[i] * loss_pct)))
-    tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)*loss_pct
-    tot_bal = df_nondef['current_balance'].sum()
-    print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
-    print_file.write("\nTotal potential loss for loans not already in default: %s (%s)" % ('${:,.0f}'.format(tot_pot_loss), "{0:.3f}%".format(float(tot_pot_loss)/float(tot_bal) * 100.)))
+    for i, model in enumerate(models):
+        y_probs_nd = model.predict_proba(X_nondef)[:,1]
+        srt_idx = np.argsort(y_probs_nd)[::-1]
+        top_m_probs = y_probs_nd[srt_idx][:m]
+        top_m_loan_ids = loans_nondef[srt_idx][:m]
+        df_top_m = df_nondef.iloc[srt_idx]
+        print_file.write("\nUsing model: %s" % model_nms[i])
+        print_file.write("\n      Loan ID:  |  Balance:  |  Default Prob:  |  Potential Loss:  |")
+        for j, loan in enumerate(top_m_loan_ids):
+            print_file.write("\n%d.      %d         %s         %0.4f      %s" % (j+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[j]), top_m_probs[j], '${:,.0f}'.format(df_top_m['current_balance'].iloc[j] * top_m_probs[j] * loss_pct)))
+        tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)*loss_pct
+        tot_bal = df_nondef['current_balance'].sum()
+        print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
+        print_file.write("\nTotal potential loss for loans not already in default: %s (%s)" % ('${:,.0f}'.format(tot_pot_loss), "{0:.3f}%".format(float(tot_pot_loss)/float(tot_bal) * 100.)))
 
     print_file.close()

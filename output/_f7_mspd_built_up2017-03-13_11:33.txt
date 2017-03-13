@@ -1,0 +1,100 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7855, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Optimal number of features for LogisticRegression: 60
+
+Top 15 Features:
+1). current_balance - 0.092699
+2). original_balance - 0.094988
+3). orig_int_rate - 0.112272
+4). orig_dscr - 0.123339
+5). orig_ltv - 0.124828
+6). principal_paydown - 0.125667
+7). most_rct_occ_rate - 0.130735
+8). orig_occ_rate - 0.131027
+9). most_rct_noi - 0.134095
+10). state_DE - 0.135100
+11). occ_rate_delta - 0.136481
+12). state_DC - 0.136495
+13). state_CO - 0.136736
+14). state_FL - 0.136795
+15). state_GA - 0.137295
+
+Optimal number of features for DecisionTreeClassifier: 74
+
+Top 15 Features:
+1). original_balance - 0.294001
+2). most_rct_occ_rate - 0.312993
+3). orig_int_rate - 0.320940
+4). orig_dscr - 0.324553
+5). orig_occ_rate - 0.325451
+6). orig_ltv - 0.327660
+7). current_balance - 0.328225
+8). principal_paydown - 0.334126
+9). orig_noi - 0.341245
+10). most_rct_noi - 0.341807
+11). occ_rate_delta - 0.346870
+12). orig_value - 0.350046
+13). most_rct_value - 0.352658
+14). value_delta - 0.354132
+15). ss_c-iii_asset_management_llc - 0.354961
+
+Optimal number of features for GradientBoostingClassifier: 55
+
+Top 15 Features:
+1). original_balance - 0.026571
+2). current_balance - 0.055446
+3). orig_int_rate - 0.085078
+4). orig_dscr - 0.249199
+5). most_rct_debt_serv - 0.382763
+6). debt_serv_delta - 0.386328
+7). state_CT - 0.392590
+8). state_KS - 0.399046
+9). ltv_delta - 0.400078
+10). orig_ltv - 0.401401
+11). state_HI - 0.402077
+12). principal_paydown - 0.402234
+13). state_DC - 0.403876
+14). most_rct_occ_rate - 0.404379
+15). orig_debt_serv - 0.405465
+
+LogisticRegression: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        1674  793  2467
+1.0          45   81   126
+All        1719  874  2593
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2369   98  2467
+1.0          76   50   126
+All        2445  148  2593
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2457   10  2467
+1.0          78   48   126
+All        2535   58  2593
+
+       Model            |  Accuracy     |    Precision     |      Recall    |       F1
+    Logistic Regression:   0.676822           0.092677           0.642857           0.367767
+    Decision Tree:         0.970305           0.337838           0.396825           0.367332
+    Gradient Boosting:     0.980332           0.827586           0.380952           0.604269
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Probability of default for Loan_ID: 504139525 is 0.6342
+
+1.  Loan ID: 304901149 / Balance: $11,185,588 / Default Prob: 1.0000 / Potential Loss: $3,433,382
+2.  Loan ID: 10102213 / Balance: $7,224,000 / Default Prob: 1.0000 / Potential Loss: $2,217,369
+3.  Loan ID: 820104747 / Balance: $22,635,317 / Default Prob: 1.0000 / Potential Loss: $6,947,767
+4.  Loan ID: 302781015 / Balance: $26,243,727 / Default Prob: 0.9985 / Potential Loss: $8,043,668
+5.  Loan ID: 10064065 / Balance: $70,000,000 / Default Prob: 0.9973 / Potential Loss: $21,428,794
+
+Total outstanding balance for all loans not already in default: $110,591,329,268
+Total potential loss for loans not already in default: $12,329,473,204 (11.149%)
