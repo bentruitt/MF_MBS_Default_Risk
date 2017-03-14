@@ -25,7 +25,7 @@ def get_scores(model, X_test, y_train, y_test, y_pred):
     accuracy = model.score(X_test, y_test)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
-    f1_score = (precision + recall) / 2.
+    f1_score = 2. * (precision * recall) / (precision + recall)
     return accuracy, \
            precision, \
            recall, \
@@ -94,12 +94,8 @@ def plot_roc_curve(X, y, plot_dir, trial, cv, model):
     plt.title('ROC plot for ' + model_nm)
     plt.legend(loc="lower right")
     plt.tight_layout()
-    plt.savefig(plot_dir + 'ROC_plot_' + model_nm + trial + '.png')
+    plt.savefig(plot_dir + model_nm + '_ROC_plot_' + trial + '.png')
     plt.close()
-
-def plot_feature_importance():
-
-    pass
 
 def grid_search(X_train, X_test, y_train, y_test, cv, estimator, scores, tuned_parameters, print_file):
     # Set the parameters by cross-validation
@@ -162,16 +158,126 @@ def bootstrap_it(X, y, data_set_size=10000, true_proportion=.25):
 
     return X_bs, y_bs
 
+def show_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
+    """
+    C: ndarray, shape (2,2) as given by scikit-learn confusion_matrix function
+    class_labels: list of strings, default simply labels 0 and 1.
+
+    Draws confusion matrix with associated metrics.
+    """
+
+    assert C.shape == (2,2), "Confusion matrix should be from binary classification only."
+
+    # true negative, false positive, etc...
+    tn = C[0,0]; fp = C[0,1]; fn = C[1,0]; tp = C[1,1];
+
+    NP = fn+tp # Num positive examples
+    NN = tn+fp # Num negative examples
+    N  = NP+NN
+
+    fig = plt.figure(figsize=(8,8))
+    ax  = fig.add_subplot(111)
+    ax.imshow(C, interpolation='nearest', cmap=plt.cm.gray)
+
+    # Draw the grid boxes
+    ax.set_xlim(-0.5,2.5)
+    ax.set_ylim(2.5,-0.5)
+    ax.plot([-0.5,2.5],[0.5,0.5], '-k', lw=2)
+    ax.plot([-0.5,2.5],[1.5,1.5], '-k', lw=2)
+    ax.plot([0.5,0.5],[-0.5,2.5], '-k', lw=2)
+    ax.plot([1.5,1.5],[-0.5,2.5], '-k', lw=2)
+
+    # Set xlabels
+    ax.set_xlabel('Predicted Label', fontsize=16)
+    ax.set_xticks([0,1,2])
+    ax.set_xticklabels(class_labels + [''])
+    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
+    # These coordinate might require some tinkering. Ditto for y, below.
+    ax.xaxis.set_label_coords(0.34,1.06)
+
+    # Set ylabels
+    ax.set_ylabel('True Label', fontsize=16, rotation=90)
+    ax.set_yticklabels(class_labels + [''],rotation=90)
+    ax.set_yticks([0,1,2])
+    ax.yaxis.set_label_coords(-0.09,0.65)
+
+
+    # Fill in initial metrics: tp, tn, etc...
+    ax.text(0,0,
+            'True Neg: %d'%(tn),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(0,1,
+            'False Neg: %d'%fn,
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(1,0,
+            'False Pos: %d'%fp,
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+
+    ax.text(1,1,
+            'True Pos: %d'%tp,
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    # Fill in secondary metrics: accuracy, true pos rate, etc...
+    ax.text(2,0,
+            'Num Neg: %d\n(False Pos Rate: %.3f)'%(NN, fp / (NN+0.)),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(2,1,
+            'Num Pos: %d\n(Recall: %.3f)'%(NP, tp / (NP+0.)),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(2,2,
+            'Accuracy: %.3f'%((tp+tn+0.)/N),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(0,2,
+            'Num Pred Neg: %d\n(Neg Pred Val: %.3f)'%(tn+fn, 1-fn/(fn+tn+0.)),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    ax.text(1,2,
+            'Num Pred Pos: %d\n(Precision: %.3f)'%(tp+fp, tp/(tp+fp+0.)),
+            va='center',
+            ha='center',
+            bbox=dict(fc='w',boxstyle='round,pad=1'))
+
+    plt.title(model_nm + " - Confusion Matrix")
+    plt.tight_layout()
+    plt.savefig(plot_dir + model_nm + '_Conf_Matrix_' + trial + '.png')
+    plt.close()
+
 
 if __name__ == '__main__':
 
     plot_dir = 'plots/'
-    trial = '_f7'
+    trial = 'f7'
     datadir = 'data/'
     file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
     model_options = ['LogisticRegression', 'DecisionTreeClassifier', 'GradientBoostingClassifier']
     drop_freddie = False
     start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
+
+    ### set trial name for file names
+    trial += "_" + start_time
 
     ### Select dataset to run
     for i, option in enumerate(file_options):
@@ -184,12 +290,11 @@ if __name__ == '__main__':
         print("Pickers can't be choosie! You get %s:)" % file_options[0])
         file_to_load = file_options[0] + '.csv'
 
-    ### set trial name for file names
-    trial += "_" + file_to_load.split("_")[1]
-    if len(file_to_load.split("_"))>3: trial += "_" + "_".join(file_to_load.split(".")[0].split("_")[3:5])
-
     ### Open file for printing output
-    print_file = open("output/" + trial + start_time + ".txt", "w")
+    data_chosen = str(file_to_load.split('_')[1])
+    if len(file_to_load.split('_'))>3:
+        data_chosen += '_' + str(file_to_load.split('_')[-1]).split('.')[0]
+    print_file = open("output/" + data_chosen + "_" + trial + ".txt", "w")
     print_file.write("This analysis was run on the dataset from %s.\n" % (datadir + file_to_load))
 
     ### Load the dataset in with pandas and refine columns
@@ -211,13 +316,11 @@ if __name__ == '__main__':
 
     ### Randomly sample data to adjust proportion of true values by oversampling
     boot_y = bool(raw_input("Would you like to randomly sample by class weighting?")=='y')
-    trial += "_" + "boot_"
     if boot_y:
         data_set_size = int(raw_input("How large of a dataset would you like to create by random sampling?"))
         true_proportion = float(raw_input("What proportion would you like to be true values?[0.xxx]"))
         boot_y_bef = bool(raw_input("Would you like to randomly sample by class weighting before train_test_split?")=='y')
         if boot_y_bef:
-            trial += "_" + "bef_"
             ## Boostrap random samples
             X_bs, y_bs = bootstrap_it(X, y, data_set_size, true_proportion)
             X, y = X_bs, y_bs
@@ -225,7 +328,6 @@ if __name__ == '__main__':
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
             orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
         else:
-            trial += "_" + "aft_"
             ## Use sklearn's train_test_split to split into train and test set
             X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=.33)
             orig_X_train, orig_X_test, orig_y_train, orig_y_test = X_train, X_test, y_train, y_test
@@ -241,7 +343,6 @@ if __name__ == '__main__':
 
     ### Apply StandardScaler
     apply_scaler = str(raw_input("Would you like to apply StandardScaler to X?[y/n]"))
-    trial += "_" + apply_scaler
     if apply_scaler == 'y':
         scaler = StandardScaler()
         X_train = scaler.fit_transform(X_train)
@@ -393,7 +494,7 @@ if __name__ == '__main__':
         plt.ylabel("Cross validation score (nb of correct classifications)")
         plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
         plt.tight_layout()
-        plt.savefig(plot_dir + 'nm_feat_plot_' + model_nms[i] + trial + '.png')
+        plt.savefig(plot_dir + model_nms[i] + '_nm_feat_plot_' + trial + '.png')
         plt.close()
         ### Plot feature importances
         max_bar = srted_scores[:n].max()
@@ -404,22 +505,16 @@ if __name__ == '__main__':
         plt.ylabel("Importance")
         plt.xlim([-1, n])
         plt.tight_layout()
-        plt.savefig(plot_dir + "feat_imp_" + model_nms[i]  + trial + ".png")
+        plt.savefig(plot_dir + model_nms[i] + "_feat_imp_" + trial + ".png")
         plt.close()
         ### Plot histograms of data for top n features
         top_nm = 6
         plt.figure()
-        # bars = np.array(df[srted_columns[:top_nm]]).T
         bars = srted_columns[:top_nm].tolist()
-        # nm, bins, patches = plt.hist(bars, label=labels, bins=50, normed=1, alpha=0.75)
-        # plt.legend(loc="upper right")
         df[bars].diff().hist(alpha=0.75, bins=50, grid=True, normed=1) #, log=True
         plt.title("Histograms of Top %d Features" % top_nm)
         plt.tight_layout()
-        # plt.xlim([-0.05e9 , .2e9])
-        # plt.axis([0.0, 2.0, 0.0, 1.10])
-        # plt.grid(True)
-        plt.savefig(plot_dir + "top_feat_hists_" + model_nms[i]  + trial + ".png")
+        plt.savefig(plot_dir + model_nms[i] + "_top_feat_hists_" + trial + ".png")
         plt.close()
 
     ### Draw a confusion matrixes for the results
@@ -435,8 +530,10 @@ if __name__ == '__main__':
         else:
             y_pred.append(model.predict(X_test))
         print_file.write("\n%s: confusion matrix:\n" % model_nms[i])
-        print_file.write(str(pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)))
+        conf_matrix = pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)
+        print_file.write(str(conf_matrix))
         print_file.write("\n")
+        show_confusion_matrix(np.array(conf_matrix)[:2,:2], plot_dir=plot_dir, trial=trial, model_nm=model_nms[i])
 
     ### Plot histogram of default probabilities
     y_prob_use = []
@@ -449,13 +546,13 @@ if __name__ == '__main__':
         df_prob.plot.hist(alpha=0.75, bins=50, grid=True)
         plt.title("Histogram of Probabilities for %s" % (model_nms[i]))
         plt.tight_layout()
-        plt.savefig(plot_dir + "default_prob_hist_" + model_nms[i]  + trial + ".png")
+        plt.savefig(plot_dir + model_nms[i] + "_default_prob_hist_" + trial + ".png")
         plt.close()
 
-    print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall    |       F1")
+    print_file.write("\n         Model               |   Accuracy     |    Precision     |      Recall    |       F1")
     for i, model in enumerate(models):
-        accuracy, precision, recall, f1_score = get_scores(lr, X_test, y_train, y_test, y_pred[i])
-        print_file.write("\n    %s   %f           %f           %f           %f" % (model_nms[i], accuracy, precision, recall, f1_score))
+        accuracy, precision, recall, f1_score = get_scores(model, X_test, y_train, y_test, y_pred[i])
+        print_file.write("\n%s   %f           %f           %f         %f" % ('{:30}'.format(model_nms[i]), accuracy, precision, recall, f1_score))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
     print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.\n")
@@ -486,9 +583,9 @@ if __name__ == '__main__':
         top_m_loan_ids = loans_nondef[srt_idx][:m]
         df_top_m = df_nondef.iloc[srt_idx]
         print_file.write("\nUsing model: %s" % model_nms[i])
-        print_file.write("\n      Loan ID:  |  Balance:  |  Default Prob:  |  Potential Loss:  |")
+        print_file.write("\n      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |")
         for j, loan in enumerate(top_m_loan_ids):
-            print_file.write("\n%d.      %d         %s         %0.4f      %s" % (j+1, loan, '${:,.0f}'.format(df_top_m['current_balance'].iloc[j]), top_m_probs[j], '${:,.0f}'.format(df_top_m['current_balance'].iloc[j] * top_m_probs[j] * loss_pct)))
+            print_file.write("\n%d. %s   %s   %s     %s" % (j+1, '{:13}'.format(loan), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j]), '{:^12,.3f}%'.format(100.*top_m_probs[j]), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j] * top_m_probs[j] * loss_pct)))
         tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)*loss_pct
         tot_bal = df_nondef['current_balance'].sum()
         print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
