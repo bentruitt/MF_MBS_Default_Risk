@@ -447,14 +447,15 @@ if __name__ == '__main__':
         df_prob = pd.DataFrame(prob_dict)
         plt.figure()
         df_prob.plot.hist(alpha=0.75, bins=50, grid=True)
-        plt.title("Histogram of Probabilities for %s" % (model_names[i]))
+        plt.title("Histogram of Probabilities for %s" % (model_nms[i]))
         plt.tight_layout()
-        plt.savefig(plot_dir + "default_prob_hist_" + model_names[i]  + trial + ".png")
+        plt.savefig(plot_dir + "default_prob_hist_" + model_nms[i]  + trial + ".png")
         plt.close()
 
     print_file.write("\n       Model            |  Accuracy     |    Precision     |      Recall    |       F1")
     for i, model in enumerate(models):
-        print_file.write("\n    %s   %f           %f           %f           %f" % (model_nms[i],get_scores(lr, X_test, y_train, y_test, y_pred[i])))
+        accuracy, precision, recall, f1_score = get_scores(lr, X_test, y_train, y_test, y_pred[i])
+        print_file.write("\n    %s   %f           %f           %f           %f" % (model_nms[i], accuracy, precision, recall, f1_score))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
     print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.\n")

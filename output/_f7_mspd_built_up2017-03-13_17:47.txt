@@ -4,80 +4,84 @@ Shape of DataFrame: (7855, 91)
 Features in Dataset:
 ['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
 
-Optimal number of features for LogisticRegression: 67
+Optimal number of features for LogisticRegression: 51
 
 Top 15 Features:
-1). current_balance - 0.091245
-2). original_balance - 0.104206
-3). orig_int_rate - 0.106243
-4). orig_dscr - 0.114779
-5). orig_ltv - 0.128312
-6). most_rct_occ_rate - 0.132706
-7). principal_paydown - 0.132960
-8). occ_rate_delta - 0.133309
-9). orig_occ_rate - 0.134968
-10). orig_noi - 0.135501
-11). most_rct_noi - 0.136282
-12). state_AK - 0.137486
-13). state_DE - 0.137675
-14). state_DC - 0.137708
-15). orig_value - 0.139227
+1). current_balance - 0.093920
+2). orig_int_rate - 0.110966
+3). original_balance - 0.111220
+4). orig_dscr - 0.122851
+5). orig_ltv - 0.125259
+6). principal_paydown - 0.129593
+7). orig_occ_rate - 0.135544
+8). orig_noi - 0.136558
+9). most_rct_occ_rate - 0.137287
+10). occ_rate_delta - 0.139529
+11). orig_value - 0.139814
+12). most_rct_noi - 0.139933
+13). most_rct_value - 0.140034
+14). state_AK - 0.141123
+15). noi_delta - 0.141194
 
 Optimal number of features for DecisionTreeClassifier: 89
 
 Top 15 Features:
-1). original_balance - 0.290765
-2). orig_dscr - 0.321414
-3). orig_int_rate - 0.323537
-4). state_FL - 0.324516
-5). current_balance - 0.325274
-6). orig_ltv - 0.327727
-7). state_HI - 0.327826
-8). principal_paydown - 0.328720
-9). most_rct_occ_rate - 0.334655
-10). state_CT - 0.335463
-11). occ_rate_delta - 0.336117
-12). state_IN - 0.336446
-13). state_AL - 0.337031
-14). state_CA - 0.338311
-15). orig_occ_rate - 0.338462
+1). original_balance - 0.290088
+2). principal_paydown - 0.292146
+3). orig_ltv - 0.293314
+4). orig_dscr - 0.304261
+5). most_rct_occ_rate - 0.310086
+6). state_IA - 0.312090
+7). orig_int_rate - 0.314181
+8). state_IL - 0.314288
+9). state_GA - 0.318899
+10). orig_occ_rate - 0.321883
+11). occ_rate_delta - 0.322878
+12). state_IN - 0.323781
+13). state_HI - 0.323908
+14). state_MI - 0.324403
+15). state_KY - 0.327854
 
-Optimal number of features for GradientBoostingClassifier: 55
+Optimal number of features for GradientBoostingClassifier: 47
 
 Top 15 Features:
-1). original_balance - 0.022189
-2). orig_int_rate - 0.041773
-3). current_balance - 0.068820
-4). orig_dscr - 0.235487
-5). principal_paydown - 0.363546
-6). orig_ltv - 0.367860
-7). ltv_delta - 0.395154
-8). orig_occ_rate - 0.396130
-9). most_rct_occ_rate - 0.398469
-10). orig_debt_serv - 0.399454
-11). most_rct_dscr - 0.399979
-12). value_delta - 0.404334
-13). state_AR - 0.404939
-14). orig_noi - 0.405576
-15). occ_rate_delta - 0.406326
+1). current_balance - 0.052429
+2). original_balance - 0.072209
+3). orig_int_rate - 0.096065
+4). orig_dscr - 0.289443
+5). orig_ltv - 0.374161
+6). principal_paydown - 0.381938
+7). most_rct_value - 0.382436
+8). orig_value - 0.395521
+9). state_GA - 0.397836
+10). orig_occ_rate - 0.398068
+11). value_delta - 0.399000
+12). state_AR - 0.401075
+13). state_FL - 0.401702
+14). noi_delta - 0.401844
+15). state_CO - 0.402423
 
 LogisticRegression: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        1625  842  2467
-1.0          53   73   126
-All        1678  915  2593
+0.0        1587  880  2467
+1.0          44   82   126
+All        1631  962  2593
 
 DecisionTreeClassifier: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        2389   78  2467
-1.0          79   47   126
-All        2468  125  2593
+0.0        2401   66  2467
+1.0          74   52   126
+All        2475  118  2593
 
 GradientBoostingClassifier: confusion matrix:
 Predicted   0.0  1.0   All
 True                      
-0.0        2460    7  2467
-1.0          90   36   126
-All        2550   43  2593
+0.0        2464    3  2467
+1.0          89   37   126
+All        2553   40  2593
+
+       Model            |  Accuracy     |    Precision     |      Recall    |       F1
+    LogisticRegression   0.643656           0.085239           0.650794           0.368016
+    LogisticRegression   0.643656           0.085239           0.650794           0.368016
