@@ -231,37 +231,123 @@ The data available for the securitized loans is as follows:
 
 **Pros / Cons:**
 
-Pros - This dataset covers all securitized loans. It appears to include not just active, but previously foreclosed loans as well.
+Pros - This dataset covers all securitized loans. It includes not just active, but previously foreclosed loans as well.
 
 Cons - This data does not contain quarterly time-series data for each property, but does contain the property financial performance data at origination (loan creation), most recent of quarter, most recent end-of-year, and previous year end-of year data. This covers about three years of a loan's term. The longest allowable loan term is 10 years and most get refinanced prior to the maturity date or have existence for significantly less that 10 years, so covering 3 years of the term should give an indication of changes in performance.
 
 ## Dataset for Analysis
 
-Data will be extracted from both multifamily loan datasets (MFLP and MSPD). Common columns will be combined into one larger dataset. One main benefit to this is increasing the data set to the combined set of 19,425 mortgages (7,855 securitized and 11,570 Freddie held mortgages).
+After exploratory data analysis it was concluded that the MSPD dataset contained more features of potential value and also allowed for more insightful engineered features to be constructed. The following features were extracted or engineered from the MSPD dataset:
 
-The features that will be used are:
+|  Column Name | Type | Non-null | Unique | Example  | Engineering |
+|  :--- | :---: | :---: | :---: | :---  |:---:|
+|  label | float64 | 7855 | 2 | 0.0  | YES* |
+|  loan_id | int64 | 7855 | 7780 | 708125468  | NO |
+|  current_balance | int64 | 7855 | 6649 | 878000000  | NO |
+|  original_balance | int64 | 7855 | 4241 | 878000000  | NO |
+|  orig_int_rate | float64 | 7855 | 581 | 0.0333  | NO |
+|  orig_dscr | float64 | 7855 | 686 | 2.27  | NO |
+|  orig_ltv | float64 | 7855 | 569 | 0.524  | NO |
+|  principal_paydown | int64 | 7855 | 5838 | 0  | YES (beg. - cur. bal.) |
+|  orig_occ_rate | float64 | 7855 | 788 | 0.977  | NO |
+|  most_rct_occ_rate | float64 | 7855 | 80 | 0.97  | NO |
+|  occ_rate_delta | float64 | 7855 | 1210 | -0.007  | YES (cur. - orig.) |
+|  orig_noi | float64 | 7855 | 6249 | 68071000.0  | NO |
+|  most_rct_noi | int64 | 7855 | 5596 | 61830621  | NO |
+|  noi_delta | float64 | 7855 | 7152 | -6240379.0  | YES (cur. - orig.) |
+|  most_rct_value | int64 | 7855 | 2323 | 1675000000  | NO |
+|  orig_value | float64 | 7855 | 7286 | 1675572519.08  | YES (orig. bal. / orig. ltv) |
+|  value_delta | float64 | 7855 | 6787 | -572519.083969  | YES (cur. val. - orig. val.) |
+|  most_rct_ltv | float64 | 7855 | 6088 | 0.524179104478  | YES (cur. bal. / cur. val.) |
+|  ltv_delta | float64 | 7855 | 6123 | 0.000179104477612  | YES (cur. ltv. - org. ltv) |
+|  most_rct_debt_serv | float64 | 7855 | 5603 | 22334125.0  | NO |
+|  orig_debt_serv | float64 | 7855 | 6359 | 29987224.6696  | YES (orig. noi / orig. dscr) |
+|  debt_serv_delta | float64 | 7855 | 7235 | -7653099.6696  | YES (cur. ds - orig. ds) |
+|  most_rct_dscr | float64 | 7855 | 1682 | 2.74  | NO |
+|  dscr_delta | float64 | 7855 | 2003 | 0.47  | YES (cur. dscr - orig. dscr) |
+|  state_AK | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_AL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_AR | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_AZ | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_CA | float64 | 7855 | 2 | 1.0  | state -> get_dummies |
+|  state_CO | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_CT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_DC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_DE | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_FL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_GA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_HI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_IA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_ID | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_IL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_IN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_KS | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_KY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_LA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MD | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_ME | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MO | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MS | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_MT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_ND | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NE | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NH | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NJ | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NM | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NV | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_NY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_OH | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_OK | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_OR | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_PA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_RI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_SC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_SD | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_TN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_TX | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_UT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_VA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_WA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_WI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_WV | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  state_WY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  ss_arbor_commercial_mortgage,_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_berkadia | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_berkeley_point_capital,_llc | float64 | 7855 | 2 | 1.0  | special_servicer -> get_dummies |
+|  ss_c-iii_asset_management_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_cwcapital | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_freddie_mac | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_gemsa | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_greystone_servicing_corporation,_inc. | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_keybank | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_midland_loan_services | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_pacific_life_insurance_company | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_sabal_financial_group,_l.p. | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_situs_holdings,_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_torchlight | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_trimont | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_wells_fargo_bank | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  ss_wells_fargo_bank_ | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
 
-| Column Name     | MFLP Column Name | MSPD Column Name |
-| -----------     | ---------------- | ---------------- |
-| loan_id         | lnno             | loan_id          |
-| loan_status*    | mrtg_status      | dlq_status_text  |
-| current_balance | amt_upb_endg     | actual_balance   |
-| original_balance | amt_upb_pch      | original_note_amount |
-| property_state  | code_st          | state            |
-| int_rate        | rate_int         | note_rate        |
-| dsc_ratio       | rate_dcr         | dscr_(ncf)       |
+** * label of "1.0" derived from:
+  * dlq_status_text (status as mapped below** - 200, 300, 350, 450 were considered
+    problem loans),
+  * no_time_dlqlife (if loan had ever been deliquent counted as problem loan), and
+  *  date_added_to_servicer_watchlist_ (if servicer had been put on watch, considered problem loan)
 
-** * label derived from
+**Mapping functions:**  
+ Map df_mspd dlq_status_text column to corresponding values for label determination:  
 
-**Mapping functions:**
-dlq_status_text_map = {
-  'Current':100,
-  '90+':200,
-  '< 30 ':100,
-  'Grace':100,
-  'Perf Balloon':100,
-  '-':500, '60-89':200}
-df_mspd['dlq_status_text'] = [dlq_status_text_map[x] for x in df_mspd['dlq_status_text']]  
+    100 = Current or less than 60 day delinquent  
+    200 = 60 or more days delinquent  
+    300 = Foreclosure  
+    350 = Problem Loans (no_time_dlqlife > 0 or date_added_to_servicer_watchlist_ Non-null)  
+    450 = Real estate owned  
+    500 = Closed
 ** * Any values with a 500 were reverted to the highest previous value
 
 ## Analysis
