@@ -53,14 +53,12 @@ There are many likely to be affected by a removal of the U.S. Government's impli
 # Observations of Data During EDA
 
 ## Multifamily Loan Performance Dataset (MFLP) - mlpd_datamart_1q16.txt
-**Data Source: ** [Investor Tools - Loan Performance Database](http://www.freddiemac.com/multifamily/investors/reporting.html)
+**Data Source: **  
+[Investor Tools - Loan Performance Database](http://www.freddiemac.com/multifamily/investors/reporting.html)
 
 The Database provides historical information on a subset of the Freddie Mac Multifamily whole loan portfolio since 1994.  It includes information on original loan terms; identifiers for prepaid loans, defaulted loans and delinquencies; property information; and dates of real estate owned (REO) sales.
 
 There are 338,445 rows of data covering 11,570 unique loans. Multiple loans may be related to the same property.
-
-In [21]: df['lnno'].nunique()  
-Out[21]: 11570
 
 **Column Data Types:**
 
@@ -90,22 +88,23 @@ Out[21]: 11570
 |  dt_mty | object | 338445 | 484 | 01SEP2014  | datetime    |
 |  code_st | object | 338445 | 50 | LA  | leave       |
 |  geographical_region | object | 338048 | 549 | New Orleans, LA MSA  | leave       |
-|  id_link_grp | float64 | 66308 | 1118 | 75103.0  | leave       |
+|  id_link_grp* | float64 | 66308 | 1118 | 75103.0  | leave       |
 |  code_sr | object | 19684 | 4 | nan  | str -> get_dummies |
 |  reo_operating_expinc | float64 | 74 | 70 | nan  | leave       |
 |  prefcl_fcl_expinc | float64 | 74 | 73 | nan  | leave       |
 |  selling_expinc | float64 | 74 | 69 | nan  | leave       |
 |  sales_price | float64 | 73 | 65 | nan  | leave       |
 
-**'id_link_grp'** links together loans that are related to the same property
+** * 'id_link_grp' links together loans that are related to the same property
 
-**Pros / Cons**
+**Pros / Cons**  
 Pros - This dataset is well compiled and would require little data cleaning and adjustments before running through models.
 
 Cons - This is a subset of the overall Freddie Mac multifamily loans issued and may not be representative of the typical loan funded by Freddie Mac and sold to investors. These are only the loans of which Freddie Mac has retained ownership. There could be a variety of reasons that they would have retained ownership of these loans. These loans could be for types of properties that are not easily bundled with other properties for securitization. This could apply to senior housing properties with some level of care (i.e. assisted living, nursing homes, memory care, etc.). This could also apply to affordable housing projects with complex capital structures and mechanisms that would potentially deter the secondary capital markets from investing in their securities. A few examples of some characteristics that could deter capital markets would be rent restrictions, phasing off tax abatements, land leases, or rent subsidies from entities with low credit ratings, such as, a bankrupt county or city. I would Freddie Mac not cherry pick these loans to inflate their performance data. The federal government did take control of both Freddie Mac and Fannie Mae following the financial crisis due in part to questionable lending practices.
 
 ## Multifamily Securitization Program Data (MSPD)
-**Data Source: ** [Freddie Mac Investor Access](https://msia.ficonsulting.com/)
+**Data Source: **  
+[Freddie Mac Investor Access](https://msia.ficonsulting.com/)
 
 The complete data set as of 2/22/2017 is in: 'data/custom_rpt_all_properties_20170222.csv'
 
