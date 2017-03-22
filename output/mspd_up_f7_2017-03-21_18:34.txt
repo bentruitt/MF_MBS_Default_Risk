@@ -1,0 +1,144 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7776, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Optimal number of features for LogisticRegression: 55
+
+Top 15 Features:
+1). current_balance - 0.092133
+2). original_balance - 0.097447
+3). orig_int_rate - 0.102144
+4). orig_dscr - 0.122479
+5). orig_ltv - 0.129677
+6). most_rct_occ_rate - 0.131583
+7). principal_paydown - 0.132566
+8). orig_occ_rate - 0.132933
+9). occ_rate_delta - 0.133896
+10). most_rct_noi - 0.135345
+11). orig_noi - 0.137224
+12). state_IN - 0.140620
+13). state_IA - 0.141684
+14). state_IL - 0.142396
+15). state_AK - 0.142486
+
+Optimal number of features for DecisionTreeClassifier: 13
+
+Top 15 Features:
+1). original_balance - 0.304318
+2). orig_int_rate - 0.306378
+3). state_GA - 0.322684
+4). state_FL - 0.330684
+5). orig_dscr - 0.332577
+6). orig_occ_rate - 0.335504
+7). state_DC - 0.338593
+8). orig_ltv - 0.339665
+9). state_NC - 0.341489
+10). most_rct_debt_serv - 0.342037
+11). state_KS - 0.342120
+12). state_WI - 0.342355
+13). state_MA - 0.343036
+14). state_IA - 0.343046
+15). state_DE - 0.343331
+
+Optimal number of features for GradientBoostingClassifier: 74
+
+Top 15 Features:
+1). orig_int_rate - 0.029158
+2). original_balance - 0.040611
+3). current_balance - 0.053048
+4). orig_dscr - 0.186181
+5). orig_ltv - 0.387920
+6). occ_rate_delta - 0.396433
+7). orig_occ_rate - 0.398871
+8). principal_paydown - 0.399983
+9). noi_delta - 0.402122
+10). debt_serv_delta - 0.403014
+11). state_AZ - 0.403937
+12). orig_noi - 0.405063
+13). state_DE - 0.406394
+14). state_PA - 0.409825
+15). state_TN - 0.410080
+
+LogisticRegression: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        1647  795  2442
+1.0          50   75   125
+All        1697  870  2567
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2361   81  2442
+1.0          86   39   125
+All        2447  120  2567
+
+GradientBoostingClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2435    7  2442
+1.0          96   29   125
+All        2531   36  2567
+
+         Model               |   Accuracy     |    Precision     |      Recall    |       F1
+LogisticRegression               0.670822           0.086207           0.600000         0.150754
+DecisionTreeClassifier           0.934944           0.325000           0.312000         0.318367
+GradientBoostingClassifier       0.959875           0.805556           0.232000         0.360248
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Using model: LogisticRegression
+Probability of default for Loan_ID: 504139525 is 0.4321
+
+Using model: DecisionTreeClassifier
+Probability of default for Loan_ID: 504139525 is 0
+
+Using model: GradientBoostingClassifier
+Probability of default for Loan_ID: 504139525 is 1.67e-05
+
+Using model: LogisticRegression
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.     820104747   $   22,635,317     100.000   %     $    6,947,934
+2.      10073726   $   13,035,957      99.987   %     $    4,000,865
+3.     302781015   $   26,243,727      99.934   %     $    8,050,228
+4.      10064065   $   70,000,000      99.735   %     $   21,429,685
+5.     534402712   $   22,682,398      99.638   %     $    6,937,211
+6.      10054726   $   33,968,168      99.219   %     $   10,345,123
+7.     300591050   $   11,482,443      99.040   %     $    3,490,702
+8.      10093681   $    9,544,780      98.915   %     $    2,897,997
+9.     820102485   $   12,102,712      98.593   %     $    3,662,666
+10.      30309058   $    1,776,700      98.321   %     $      536,203
+
+Total outstanding balance for all loans not already in default: $109,137,708,223
+Total potential loss for loans not already in default: $11,746,286,619 (10.763%)
+Using model: DecisionTreeClassifier
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.     708248861   $    4,379,039     100.000   %     $    1,344,152
+2.     708230040   $    1,690,083     100.000   %     $      518,773
+3.     708573789   $    4,073,728     100.000   %     $    1,250,436
+4.     708339239   $   13,868,161     100.000   %     $    4,256,850
+5.      10054726   $   33,968,168     100.000   %     $   10,426,574
+6.     708575587   $    4,968,191     100.000   %     $    1,524,993
+7.      10082649   $   38,850,167     100.000   %     $   11,925,110
+8.     300911052   $   11,465,116     100.000   %     $    3,519,233
+9.      10073726   $   13,035,957     100.000   %     $    4,001,404
+10.     300701080   $    5,772,025     100.000   %     $    1,771,731
+
+Total outstanding balance for all loans not already in default: $109,137,708,223
+Total potential loss for loans not already in default: $948,175,136 (0.869%)
+Using model: GradientBoostingClassifier
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.      30305784   $   47,377,792      98.185   %     $   14,278,723
+2.      10054711   $   19,778,092      84.114   %     $    5,106,499
+3.     669100025   $            0      41.964   %     $            0
+4.     820107009   $    8,669,095      40.959   %     $    1,089,911
+5.     708230385   $    1,139,699      30.124   %     $      105,382
+6.     708642179   $      992,561      21.702   %     $       66,120
+7.     932338380   $    1,040,000      19.742   %     $       63,023
+8.     708491421   $      984,929      11.400   %     $       34,464
+9.      10073953   $   36,000,000      10.486   %     $    1,158,737
+10.     456000040   $    9,226,111      7.102    %     $      201,125
+
+Total outstanding balance for all loans not already in default: $109,137,708,223
+Total potential loss for loans not already in default: $33,849,525 (0.031%)

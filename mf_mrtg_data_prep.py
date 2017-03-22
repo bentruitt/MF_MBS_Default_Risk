@@ -119,6 +119,12 @@ def map_dfs(df_mflp, df_mspd, df_map):
 
 ### Plot histograms for data columns
 def plot_histograms(df, columns, name='test', plotdir='plots/'):
+    filename = name.replace(" ","_")
+    rem_columns = []
+    for col in columns:
+        if (df[col].nunique() > 60 and type(df[col][0])==str) or (df[col].nunique()==len(df[col]) or df[col].nunique() < 3):
+            rem_columns.append(col)
+    columns = [x for x in columns if x not in rem_columns]
     plots = len(columns)
     rem_plots = 0
     y_plots = int(np.sqrt(plots))+1
@@ -128,24 +134,33 @@ def plot_histograms(df, columns, name='test', plotdir='plots/'):
     plt.figure(figsize=(y_plots*5,x_plots*5))
     plt.suptitle(name)
     for i, col in enumerate(columns):
-        plt.subplot(y_plots, x_plots, i+1)
         column_list = [x for x in df[col]]
-        labels, values = zip(*Counter(column_list).items())
-        indexes = np.arange(len(labels))
-        if type(labels[0]) == str:
-            idx = np.argsort(values)
+        plt.subplot(y_plots, x_plots, i+1)
+        if df[col].nunique() > 60:
+            try:
+                plt.hist(df[col],
+                    range=(df[col].min(), df[col].max()),
+                    bins=50,
+                    alpha=0.75)
+            except:
+                set_trace()
         else:
-            idx = np.argsort(labels)
-        labels = [labels[x] for x in idx]
-        values = [values[x] for x in idx]
-        width = 1
-        plt.bar(indexes, values, width, alpha=.5)
+            labels, values = zip(*Counter(column_list).items())
+            indexes = np.arange(len(labels))
+            if type(labels[0]) == str:
+                idx = np.argsort(values)
+            else:
+                idx = np.argsort(labels)
+            labels = [labels[x] for x in idx]
+            values = [values[x] for x in idx]
+            width = 1
+            plt.bar(indexes, values, width, alpha=.5)
+            plt.xticks(indexes + width * 0.5, labels, rotation=70)
         plt.title(col)
-        plt.xticks(indexes + width * 0.5, labels, rotation=70)
     plt.tight_layout()
     top_s = 1.-1./(3.*y_plots)
     plt.subplots_adjust(top=top_s)
-    plt.savefig(plotdir + name + '_hist.png')
+    plt.savefig(plotdir + filename + '_hist.png')
     plt.close()
 
 ### print table for markdown file
@@ -196,14 +211,34 @@ def clean_mspd_data(df):
     df['uw_ltv'] = ltv_col
     special_svcr = [x.lower().replace(' ', '_') for x in df['special_servicer']]
     df['special_servicer'] = np.array(special_svcr)
+    loan_ct = Counter(df['loan_id'])
+    dup_ids = []
+    for key, value in loan_ct.iteritems():
+        if value>1:
+            dup_ids.append(key)
+    for dup_id in dup_ids:
+        df_temp = df[df['loan_id']==dup_id]
+        for uzip in df_temp['zip_code'].tolist():
+            state = df_temp[df_temp['zip_code']==uzip]['state'].tolist()[0].upper()
+            city = df_temp[df_temp['zip_code']==uzip]['property_city'].tolist()[0].upper()
+            zips = df_zip[(df_zip['state']==state) & (df_zip['city']==city)]['zipcode'].tolist()
+            if int(uzip) not in zips:
+                df.drop(df_temp[df_temp['zip_code']==uzip].index, inplace=True)
     return df
 
 if __name__ == '__main__':
     datadir = 'data/'
 
+    ### determine whether or not to plot histograms of MSPD
+    plot_hists = bool(raw_input('Would you like to plot a histogram for each MSPD column? [y/n]')=='y')
+
     ### open data and import into pandas dataframes
     mflp_file = 'mlpd_datamart_1q16.txt'
     mspd_file = 'custom_rpt_all_properties_20170222.csv'
+    zip_file = 'zipcode-database.csv'
+    ## open zipcode data
+    df_zip = read_data_pandas(datadir + zip_file)
+    df_zip = df_zip[['zipcode', 'city', 'state']]
     ## Open Multifamily Loan Performance Data
     df_mflp = read_data_pandas(datadir + mflp_file, sep='|')
     df_mflp['special_svcr'] = 'freddie_mac'
@@ -258,14 +293,10 @@ if __name__ == '__main__':
     df_mspd['most_rct_dscr'] = df_mspd_o['most_recentdscr_(ncf)']
     df_mspd['dscr_delta'] = df_mspd['most_rct_dscr'] - df_mspd['orig_dscr']
 
+    df_mspd = df_mspd.replace([-np.inf, np.inf],0)
+
     df_mspd.to_csv(datadir + 'df_mspd_labeled_built_up.csv')
 
-
-
-
-    # plot_hists = str(raw_input('Would you like to plot a histogram for each column? [y/n]'))
-    #
-    # hist_columns = ['balance_range', 'dscr_range', 'dlq_status_text', 'fka_status_of_loan', 'group_id', 'loan_amortization_type', 'ltv_range', 'master_servicer', 'most_recentfinancial_indicator', 'most_recentphys_occup', 'no_time_dlq12mth', 'no_time_dlqlife', 'note_rate_range', 'occupancy_range', 'property_subtype', 'special_servicer', 'state']
-
-    # if plot_hists == 'y':
-    #     plot_histograms(df_mspd, hist_columns, name = 'Histogram of Freddie Columns')
+    if plot_hists:
+        hist_columns = df_mspd.columns.tolist()
+        plot_histograms(df_mspd, hist_columns, name = 'Histograms of MSPD Columns')

@@ -1,0 +1,54 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7855, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Optimal number of features for DecisionTreeClassifier: 22
+
+Top 15 Features:
+1). current_balance - 0.285331
+2). original_balance - 0.287703
+3). orig_int_rate - 0.313355
+4). most_rct_debt_serv - 0.314275
+5). principal_paydown - 0.316254
+6). orig_ltv - 0.316510
+7). orig_value - 0.321992
+8). state_AZ - 0.324482
+9). value_delta - 0.328674
+10). state_WI - 0.330151
+11). state_MN - 0.330966
+12). most_rct_occ_rate - 0.331894
+13). most_rct_value - 0.331931
+14). state_UT - 0.335394
+15). state_TX - 0.336104
+
+DecisionTreeClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2410   57  2467
+1.0          88   38   126
+All        2498   95  2593
+
+         Model               |   Accuracy     |    Precision     |      Recall    |       F1
+DecisionTreeClassifier           0.944080           0.400000           0.301587         0.343891
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Using model: DecisionTreeClassifier
+Probability of default for Loan_ID: 504139525 is 0
+
+Using model: DecisionTreeClassifier
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.     981210791   $            0     100.000   %     $            0
+2.      30268946   $    5,732,274     100.000   %     $    1,759,529
+3.     889100016   $   21,405,585     100.000   %     $    6,570,473
+4.      30283163   $    5,879,166     100.000   %     $    1,804,618
+5.      30268965   $    5,867,505     100.000   %     $    1,801,038
+6.      16000066   $    5,801,291     100.000   %     $    1,780,714
+7.      17000011   $   21,596,253     100.000   %     $    6,628,999
+8.     818100060   $    5,791,173     100.000   %     $    1,777,608
+9.      10073861   $    5,788,590     100.000   %     $    1,776,815
+10.     291000036   $    5,786,702     100.000   %     $    1,776,236
+
+Total outstanding balance for all loans not already in default: $110,591,329,268
+Total potential loss for loans not already in default: $4,479,174,826 (4.050%)

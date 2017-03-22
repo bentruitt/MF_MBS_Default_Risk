@@ -1,0 +1,43 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7776, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Optimal number of features for LogisticRegression: 54
+
+Top 15 Features:
+1). current_balance - 0.093375
+2). original_balance - 0.097229
+3). orig_int_rate - 0.111979
+4). orig_dscr - 0.114439
+5). principal_paydown - 0.123289
+6). orig_ltv - 0.125059
+7). most_rct_occ_rate - 0.126337
+8). orig_occ_rate - 0.126515
+9). occ_rate_delta - 0.133684
+10). orig_noi - 0.138569
+11). most_rct_noi - 0.139343
+12). noi_delta - 0.140186
+13). state_GA - 0.140604
+14). state_DE - 0.140883
+15). state_HI - 0.141754
+
+Optimal number of features for DecisionTreeClassifier: 78
+
+Top 15 Features:
+1). current_balance - 0.174296
+2). orig_ltv - 0.320990
+3). original_balance - 0.321517
+4). principal_paydown - 0.330814
+5). orig_dscr - 0.336410
+6). orig_noi - 0.337663
+7). orig_int_rate - 0.337877
+8). noi_delta - 0.339848
+9). occ_rate_delta - 0.342861
+10). state_CT - 0.344088
+11). orig_value - 0.344810
+12). most_rct_value - 0.344902
+13). orig_debt_serv - 0.346305
+14). state_AR - 0.349515
+15). state_AK - 0.349859

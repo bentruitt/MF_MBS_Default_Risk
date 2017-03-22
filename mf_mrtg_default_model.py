@@ -12,6 +12,7 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, roc_curve, auc, classification_report
 from sklearn.model_selection import GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC, LinearSVC
@@ -158,7 +159,7 @@ def bootstrap_it(X, y, data_set_size=10000, true_proportion=.25):
 
     return X_bs, y_bs
 
-def show_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
+def plot_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
     """
     C: ndarray, shape (2,2) as given by scikit-learn confusion_matrix function
     class_labels: list of strings, default simply labels 0 and 1.
@@ -260,8 +261,8 @@ def show_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
             ha='center',
             bbox=dict(fc='w',boxstyle='round,pad=1'))
 
-    plt.title(model_nm + " - Confusion Matrix")
     plt.tight_layout()
+    plt.suptitle(model_nm + " - Confusion Matrix", y=1.08)
     plt.savefig(plot_dir + model_nm + '_Conf_Matrix_' + trial + '.png')
     plt.close()
 
@@ -365,6 +366,8 @@ if __name__ == '__main__':
         run_y.append(bool(raw_input("Run %s?[y/n]" %(model))=='y'))
         if run_y[i]:
             grid_y.append((raw_input("Run %s GridSearchCV?[y/n]" %(model))=='y'))
+        else:
+            grid_y.append(False)
 
     ### Build LogisticRegression model
     # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
@@ -508,12 +511,14 @@ if __name__ == '__main__':
         plt.savefig(plot_dir + model_nms[i] + "_feat_imp_" + trial + ".png")
         plt.close()
         ### Plot histograms of data for top n features
-        top_nm = 6
+        top_nm = 9
         plt.figure()
         bars = srted_columns[:top_nm].tolist()
-        df[bars].diff().hist(alpha=0.75, bins=50, grid=True, normed=1) #, log=True
-        plt.title("Histograms of Top %d Features" % top_nm)
+        df[bars].diff().hist(alpha=0.75, bins=50, normed=1, grid=True) #, log=True
         plt.tight_layout()
+        top_s = .85
+        plt.subplots_adjust(top=top_s)
+        plt.suptitle("Histograms of Top %d Features" % top_nm)
         plt.savefig(plot_dir + model_nms[i] + "_top_feat_hists_" + trial + ".png")
         plt.close()
 
@@ -533,7 +538,7 @@ if __name__ == '__main__':
         conf_matrix = pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)
         print_file.write(str(conf_matrix))
         print_file.write("\n")
-        show_confusion_matrix(np.array(conf_matrix)[:2,:2], plot_dir=plot_dir, trial=trial, model_nm=model_nms[i])
+        plot_confusion_matrix(np.array(conf_matrix)[:2,:2], plot_dir=plot_dir, trial=trial, model_nm=model_nms[i])
 
     ### Plot histogram of default probabilities
     y_prob_use = []
@@ -544,7 +549,7 @@ if __name__ == '__main__':
         df_prob = pd.DataFrame(prob_dict)
         plt.figure()
         df_prob.plot.hist(alpha=0.75, bins=50, grid=True)
-        plt.title("Histogram of Probabilities for %s" % (model_nms[i]))
+        plt.suptitle("Histogram of Probabilities for %s" % (model_nms[i]))
         plt.tight_layout()
         plt.savefig(plot_dir + model_nms[i] + "_default_prob_hist_" + trial + ".png")
         plt.close()
@@ -569,7 +574,7 @@ if __name__ == '__main__':
     ### Print top 'm' loans that have highest default probability, but not currently flagged
     ## percent of loan balance recovered following foreclosure 0.6930486709
     ## percent of loan balance lost following foreclosure 0.3069513291
-    m = 5
+    m = 10
     loss_pct = 0.3069513291
     nondef = y==0
     X_nondef = X_t[nondef]

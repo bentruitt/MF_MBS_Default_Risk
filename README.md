@@ -347,7 +347,11 @@ After exploratory data analysis it was concluded that the MSPD dataset contained
     350 = Problem Loans (no_time_dlqlife > 0 or date_added_to_servicer_watchlist_ Non-null)  
     450 = Real estate owned  
     500 = Closed
-** * Any values with a 500 were reverted to the highest previous value
+* Any values with a 500 were reverted to the highest previous value
+
+### Histograms of Features as Relevant
+
+<img align="center" src="/plots/web/Histograms_of_MSPD_Columns_hist.png" alt="Histograms" width=100%>
 
 ## Analysis
 
