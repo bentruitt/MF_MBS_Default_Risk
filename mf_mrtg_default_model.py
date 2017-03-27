@@ -273,7 +273,14 @@ if __name__ == '__main__':
     trial = 'f7'
     datadir = 'data/'
     file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
-    model_options = ['LogisticRegression', 'DecisionTreeClassifier', 'GradientBoostingClassifier']
+    classifiers = [LogisticRegression, DecisionTreeClassifier, GradientBoostingClassifier, KNeighborsClassifier, RandomForestClassifier] #
+    scores = ['f1'] # 'precision_macro', 'recall_macro', 'f1_weighted'
+    model_options = []
+    model_abbs = []
+    for classifier in classifiers:
+        model_name = str(classifier).split(".")[-1].split("'")[0]
+        model_options.append(model_name)
+        model_abbs.append("".join([l for l in model_name if l.isupper()]))
     drop_freddie = False
     start_time = str(datetime.now().strftime('%Y-%m-%d_%H:%M'))
 
@@ -353,106 +360,30 @@ if __name__ == '__main__':
         X_t = X
 
     ### Check which models and grid searches to run
-    scores = ['f1'] # 'precision_macro', 'recall_macro', 'f1_weighted'
-    run_y = []
-    grid_y = []
+    run_class = []
+    run_models = []
+    run_abbs = []
+    run_grids = []
     models = []
-    model_nms = []
-    best_parameters_lr = {}
-    best_parameters_dt = {}
-    best_parameters_gb = {}
-
-    for i, model in enumerate(model_options):
-        run_y.append(bool(raw_input("Run %s?[y/n]" %(model))=='y'))
-        if run_y[i]:
-            grid_y.append((raw_input("Run %s GridSearchCV?[y/n]" %(model))=='y'))
-        else:
-            grid_y.append(False)
-
-    ### Build LogisticRegression model
-    # LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
-    if run_y[0]:
-        if grid_y[0]:
-            tuned_parameters_lr = [{
-            'penalty': ['l1'],
-            'C': [1., 2500., 5000., 7500., 10000.],
-            'class_weight': ['balanced', None]
-            }, {
-            'penalty': ['l2'],
-            'solver': ['newton-cg'],
-            'C': [1., 10., 100., 1000., 2000., 5000., 7500., 10000.],
-            'class_weight': ['balanced', None]
-            }]
-
-            best_parameters_lr = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=LogisticRegression, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
-            print("Best parameters: %s" % str(best_parameters_lr))
-            print_file.write("Best parameters: %s" % str(best_parameters_lr))
-        else:
-            best_parameters_lr['f1'] = {
+    ## predetermined best parameters
+    best_parameters = {
+    'LR':
+        {'f1':{
             'penalty': 'l2',
             'C': 15000.0,
             'solver': 'newton-cg',
-            'class_weight': 'balanced'
-            }
-
-        lr = LogisticRegression(**best_parameters_lr['f1'])
-        lr.fit(X_train, y_train)
-        models.append(lr)
-
-    ### Build DecisionTreeClassifier model
-    # DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_split=1e-07, class_weight=None, presort=False)
-    if run_y[1]:
-        if grid_y[1]:
-            tuned_parameters = [{
-            'criterion': ['gini'],
-            'splitter': ['best', 'random'],
-            'max_features': [10, 20, 40, 50, 55, None],
-            'max_depth': [5, 10, 20, 30, None],
-            'min_samples_split': [3, 4, 5],
-            'min_weight_fraction_leaf': [0],
-            'class_weight': [None, "balanced"]
-            }]
-
-            best_parameters_dt = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=DecisionTreeClassifier, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
-            print("Best parameters: %s" % str(best_parameters_dt))
-            print_file.write("Best parameters: %s" % str(best_parameters_dt))
-        else:
-            best_parameters_dt['f1'] = {
+            'class_weight': 'balanced'}},
+    'DTC':
+        {'f1':{
             'splitter': 'best',
             'min_samples_split': 4,
             'min_weight_fraction_leaf': 0,
             'criterion': 'gini',
             'max_features': None,
             'max_depth': None,
-            'class_weight': None
-            }
-
-        dt = DecisionTreeClassifier(**best_parameters_dt['f1']) #, , warm_start=True
-        dt.fit(X_train, y_train)
-        models.append(dt)
-
-    ### Build GradientBoostingClassifier model
-    # GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
-    if run_y[2]:
-        if grid_y[2]:
-            tuned_parameters = [{
-            'loss': ['deviance'], # ,'exponential'
-            'n_estimators': [100], # 50, 200
-            'max_depth': [15], #3, 5, 10, 15, 20
-            'criterion': ['friedman_mse'], # ,'mse', 'mae'
-            'min_samples_split': [3], # 3, 4
-            'min_samples_leaf': [1], #, 2, 3
-            'subsample': [1.0], # , .8, .9, 1.
-            'max_features': [None], # 5, 10, 20, 40, 50, 55, None
-            'init': [None], # 'deviance', 'exponential'
-            'warm_start': [False, True]
-            }]
-
-            best_parameters_gb = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=GradientBoostingClassifier, tuned_parameters=tuned_parameters, scores = scores, print_file=print_file)
-            print("Best parameters: %s" % str(best_parameters_gb))
-            print_file.write("Best parameters: %s" % str(best_parameters_gb))
-        else:
-            best_parameters_gb['f1'] = {
+            'class_weight': None}},
+    'GBC':
+        {'f1':{
             'loss': 'deviance',
             'min_samples_leaf': 1,
             'n_estimators': 100,
@@ -462,16 +393,83 @@ if __name__ == '__main__':
             'criterion': 'friedman_mse',
             'max_features': None,
             'max_depth': 15,
-            'warm_start': False
-            }
+            'warm_start': False}}}
+    tuned_parameters = {
+    ## LogisticRegression(penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True, intercept_scaling=1, class_weight=None, random_state=None, solver='liblinear', max_iter=100, multi_class='ovr', verbose=0, warm_start=False, n_jobs=1)
+    'LR':[{
+        'penalty': ['l1'],
+        'C': [1., 2500., 5000., 7500., 10000.],
+        'class_weight': ['balanced', None]
+    }, {
+        'penalty': ['l2'],
+        'solver': ['newton-cg'],
+        'C': [1., 10., 100., 1000., 2000., 5000., 7500., 10000.],
+        'class_weight': ['balanced', None]
+    }],
+    ## DecisionTreeClassifier(criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, random_state=None, max_leaf_nodes=None, min_impurity_split=1e-07, class_weight=None, presort=False)
+    'DTC':[{
+        'criterion': ['gini'],
+        'splitter': ['best', 'random'],
+        'max_features': [10, 20, 40, 50, 55, None],
+        'max_depth': [5, 10, 20, 30, None],
+        'min_samples_split': [3, 4, 5],
+        'min_weight_fraction_leaf': [0],
+        'class_weight': [None, "balanced"]
+    }],
+    ## GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimators=100, subsample=1.0, criterion='friedman_mse', min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_depth=3, min_impurity_split=1e-07, init=None, random_state=None, max_features=None, verbose=0, max_leaf_nodes=None, warm_start=False, presort='auto')
+    'GBC':[{
+        'loss': ['deviance'], # ,'exponential'
+        'n_estimators': [100], # 50, 200
+        'max_depth': [15], #3, 5, 10, 15, 20
+        'criterion': ['friedman_mse'], # ,'mse', 'mae'
+        'min_samples_split': [3], # 3, 4
+        'min_samples_leaf': [1], #, 2, 3
+        'subsample': [1.0], # , .8, .9, 1.
+        'max_features': [None], # 5, 10, 20, 40, 50, 55, None
+        'init': [None], # 'deviance', 'exponential'
+        'warm_start': [False, True]
+    }]}
+    ## KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski', metric_params=None, n_jobs=1, n_neighbors=5, p=2, weights='uniform')
+    ## RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini', max_depth=None, max_features='auto', max_leaf_nodes=None, min_impurity_split=1e-07, min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0, n_estimators=10, n_jobs=1, oob_score=False, random_state=None, verbose=0, warm_start=False)
 
-        gb = GradientBoostingClassifier(**best_parameters_gb['f1'])
-        gb.fit(X_train, y_train)
-        models.append(gb)
+    for i, model in enumerate(model_options):
+        if bool(raw_input("Run %s?[y/n]" %(model))=='y'):
+            run_class.append(classifiers[i])
+            run_models.append(model)
+            run_abbs.append(model_abbs[i])
+            if model_abbs[i] in tuned_parameters.keys():
+                run_grids.append((raw_input("Run %s GridSearchCV?[y/n]" %(model))=='y'))
+            else:
+                run_grids.append(False)
 
-    ### Create list of used model names as model_nms
-    for model in models:
-        model_nms.append(str(model).split('(')[0])
+    if len(scores) > 1:
+        for i, score in enumerate(scores):
+            if bool(raw_input("Would you like to use %s as primary scoring?[y/n]" %(score))=='y'):
+                scoring = score
+                break
+    else:
+        scoring = scores[0]
+
+
+    ### Build models
+    for i, model in enumerate(run_models):
+        if run_grids[i]:
+            best_parameters[run_abbs[i]] = grid_search(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test, cv=5,  estimator=run_class[i], tuned_parameters=tuned_parameters[run_abbs[i]], scores = scores, print_file=print_file)
+            print("\nBest parameters: %s" % str(best_parameters[run_abbs[i]]))
+            print_file.write("\nBest parameters: %s" % str(best_parameters[run_abbs[i]]))
+        else:
+            if run_abbs[i] not in best_parameters.keys():
+                best_parameters[run_abbs[i]] = {}
+            if scoring not in best_parameters[run_abbs[i]].keys():
+                best_parameters[run_abbs[i]][scoring] = {}
+
+        run_abbs[i] = run_class[i](**best_parameters[run_abbs[i]][scoring])
+        run_abbs[i].fit(X_train, y_train)
+        models.append(run_abbs[i])
+
+    ### Print models
+    print_file.write("\nModels:\n")
+    print_file.write(models)
 
     ### Create StratifiedKFold generator
     cv = StratifiedKFold(y, n_folds=5, shuffle=True)
@@ -479,12 +477,16 @@ if __name__ == '__main__':
     #### Determine optimal number of features
     n = 15 # number of features to list
     for i, model in enumerate(models):
-        rfecv = RFECV(estimator=model, step=1, cv=cv, scoring='f1')
+        rfecv = RFECV(estimator=model, step=1, cv=cv, scoring=scoring)
         try:
             rfecv.fit(X_t, y)
         except:
-            set_trace()
-        print_file.write("\nOptimal number of features for %s: %d" % (model_nms[i], rfecv.n_features_))
+            try:
+                rfecv = RFECV(estimator=model, step=1, cv=cv)
+                rfecv.fit(X_t, y)
+            except:
+                continue
+        print_file.write("\nOptimal number of features for %s: %d" % (run_models[i], rfecv.n_features_))
         srt_idx = np.argsort(rfecv.grid_scores_)
         srted_scores = rfecv.grid_scores_[srt_idx]
         srted_columns = df.columns[srt_idx]
@@ -497,18 +499,18 @@ if __name__ == '__main__':
         plt.ylabel("Cross validation score (nb of correct classifications)")
         plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
         plt.tight_layout()
-        plt.savefig(plot_dir + model_nms[i] + '_nm_feat_plot_' + trial + '.png')
+        plt.savefig(plot_dir + run_models[i] + '_nm_feat_plot_' + trial + '.png')
         plt.close()
         ### Plot feature importances
         max_bar = srted_scores[:n].max()
         plt.figure()
-        plt.title("Importance of Each Feature for %s" % (model_nms[i]))
+        plt.title("Importance of Each Feature for %s" % (run_models[i]))
         plt.bar(range(n), np.subtract(max_bar, srted_scores[:n]), color="g", align="center")
         plt.xticks(range(n), srted_columns[:n], rotation=75)
         plt.ylabel("Importance")
         plt.xlim([-1, n])
         plt.tight_layout()
-        plt.savefig(plot_dir + model_nms[i] + "_feat_imp_" + trial + ".png")
+        plt.savefig(plot_dir + run_models[i] + "_feat_imp_" + trial + ".png")
         plt.close()
         ### Plot histograms of data for top n features
         top_nm = 9
@@ -519,7 +521,7 @@ if __name__ == '__main__':
         top_s = .85
         plt.subplots_adjust(top=top_s)
         plt.suptitle("Histograms of Top %d Features" % top_nm)
-        plt.savefig(plot_dir + model_nms[i] + "_top_feat_hists_" + trial + ".png")
+        plt.savefig(plot_dir + run_models[i] + "_top_feat_hists_" + trial + ".png")
         plt.close()
 
     ### Draw a confusion matrixes for the results
@@ -534,30 +536,30 @@ if __name__ == '__main__':
             y_pred.append((y_prob[i] > threshold).astype(float))
         else:
             y_pred.append(model.predict(X_test))
-        print_file.write("\n%s: confusion matrix:\n" % model_nms[i])
+        print_file.write("\n%s: confusion matrix:\n" % run_models[i])
         conf_matrix = pd.crosstab(pd.Series(y_test), pd.Series(y_pred[i]), rownames=['True'], colnames=['Predicted'], margins=True)
         print_file.write(str(conf_matrix))
         print_file.write("\n")
-        plot_confusion_matrix(np.array(conf_matrix)[:2,:2], plot_dir=plot_dir, trial=trial, model_nm=model_nms[i])
+        plot_confusion_matrix(np.array(conf_matrix)[:2,:2], plot_dir=plot_dir, trial=trial, model_nm=run_models[i])
 
     ### Plot histogram of default probabilities
     y_prob_use = []
     prob_threshold = .01
     for i in range(len(models)):
         y_prob_use.append(y_prob[i][y_prob[i]>prob_threshold])
-        prob_dict = {model_nms[i]: y_prob_use[i]}
+        prob_dict = {run_models[i]: y_prob_use[i]}
         df_prob = pd.DataFrame(prob_dict)
         plt.figure()
         df_prob.plot.hist(alpha=0.75, bins=50, grid=True)
-        plt.suptitle("Histogram of Probabilities for %s" % (model_nms[i]))
+        plt.suptitle("Histogram of Probabilities for %s" % (run_models[i]))
         plt.tight_layout()
-        plt.savefig(plot_dir + model_nms[i] + "_default_prob_hist_" + trial + ".png")
+        plt.savefig(plot_dir + run_models[i] + "_default_prob_hist_" + trial + ".png")
         plt.close()
 
     print_file.write("\n         Model               |   Accuracy     |    Precision     |      Recall    |       F1")
     for i, model in enumerate(models):
         accuracy, precision, recall, f1_score = get_scores(model, X_test, y_train, y_test, y_pred[i])
-        print_file.write("\n%s   %f           %f           %f         %f" % ('{:30}'.format(model_nms[i]), accuracy, precision, recall, f1_score))
+        print_file.write("\n%s   %f           %f           %f         %f" % ('{:30}'.format(run_models[i]), accuracy, precision, recall, f1_score))
 
     ### Use plot_roc function provided during random forests to visualize curve of each #model
     print_file.write("\nUse the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.\n")
@@ -568,7 +570,7 @@ if __name__ == '__main__':
     check_id = 504139525
     for i, model in enumerate(models):
         id_prob = model.predict_proba(X_t[loan_ids == check_id][0])[:,1]
-        print_file.write("\nUsing model: %s" % model_nms[i])
+        print_file.write("\nUsing model: %s" % run_models[i])
         print_file.write("\nProbability of default for Loan_ID: %d is %0.4g\n" % (check_id, id_prob))
 
     ### Print top 'm' loans that have highest default probability, but not currently flagged
@@ -587,7 +589,7 @@ if __name__ == '__main__':
         top_m_probs = y_probs_nd[srt_idx][:m]
         top_m_loan_ids = loans_nondef[srt_idx][:m]
         df_top_m = df_nondef.iloc[srt_idx]
-        print_file.write("\nUsing model: %s" % model_nms[i])
+        print_file.write("\nUsing model: %s" % run_models[i])
         print_file.write("\n      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |")
         for j, loan in enumerate(top_m_loan_ids):
             print_file.write("\n%d. %s   %s   %s     %s" % (j+1, '{:13}'.format(loan), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j]), '{:^12,.3f}%'.format(100.*top_m_probs[j]), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j] * top_m_probs[j] * loss_pct)))

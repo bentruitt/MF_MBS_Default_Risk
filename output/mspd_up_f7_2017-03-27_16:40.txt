@@ -1,0 +1,89 @@
+This analysis was run on the dataset from data/df_mspd_labeled_built_up.csv.
+
+Shape of DataFrame: (7776, 91)
+Features in Dataset:
+['loan_id', 'current_balance', 'original_balance', 'orig_int_rate', 'orig_dscr', 'orig_ltv', 'principal_paydown', 'label', 'orig_occ_rate', 'most_rct_occ_rate', 'occ_rate_delta', 'orig_noi', 'most_rct_noi', 'noi_delta', 'most_rct_value', 'orig_value', 'value_delta', 'most_rct_ltv', 'ltv_delta', 'most_rct_debt_serv', 'orig_debt_serv', 'debt_serv_delta', 'most_rct_dscr', 'dscr_delta', 'state_AK', 'state_AL', 'state_AR', 'state_AZ', 'state_CA', 'state_CO', 'state_CT', 'state_DC', 'state_DE', 'state_FL', 'state_GA', 'state_HI', 'state_IA', 'state_ID', 'state_IL', 'state_IN', 'state_KS', 'state_KY', 'state_LA', 'state_MA', 'state_MD', 'state_ME', 'state_MI', 'state_MN', 'state_MO', 'state_MS', 'state_MT', 'state_NC', 'state_ND', 'state_NE', 'state_NH', 'state_NJ', 'state_NM', 'state_NV', 'state_NY', 'state_OH', 'state_OK', 'state_OR', 'state_PA', 'state_RI', 'state_SC', 'state_SD', 'state_TN', 'state_TX', 'state_UT', 'state_VA', 'state_WA', 'state_WI', 'state_WV', 'state_WY', 'ss_arbor_commercial_mortgage,_llc', 'ss_berkadia', 'ss_berkeley_point_capital,_llc', 'ss_c-iii_asset_management_llc', 'ss_cwcapital', 'ss_freddie_mac', 'ss_gemsa', 'ss_greystone_servicing_corporation,_inc.', 'ss_keybank', 'ss_midland_loan_services', 'ss_pacific_life_insurance_company', 'ss_sabal_financial_group,_l.p.', 'ss_situs_holdings,_llc', 'ss_torchlight', 'ss_trimont', 'ss_wells_fargo_bank', 'ss_wells_fargo_bank_']
+
+Models:
+[KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=5, p=2,
+           weights='uniform'), RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
+            max_depth=None, max_features='auto', max_leaf_nodes=None,
+            min_impurity_split=1e-07, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+            verbose=0, warm_start=False)]
+Optimal number of features for RandomForestClassifier: 11
+
+Top 15 Features:
+1). ss_wells_fargo_bank_ - 0.281229
+2). state_RI - 0.307290
+3). ss_gemsa - 0.317168
+4). ss_greystone_servicing_corporation,_inc. - 0.318449
+5). state_PA - 0.320164
+6). ss_cwcapital - 0.326836
+7). ss_pacific_life_insurance_company - 0.333025
+8). state_TX - 0.333328
+9). ss_arbor_commercial_mortgage,_llc - 0.338469
+10). state_UT - 0.338870
+11). ss_keybank - 0.339892
+12). state_SD - 0.340325
+13). ss_berkeley_point_capital,_llc - 0.340816
+14). ss_situs_holdings,_llc - 0.341616
+15). state_WI - 0.342294
+
+KNeighborsClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2422   20  2442
+1.0         125    0   125
+All        2547   20  2567
+
+RandomForestClassifier: confusion matrix:
+Predicted   0.0  1.0   All
+True                      
+0.0        2437    5  2442
+1.0          99   26   125
+All        2536   31  2567
+
+         Model               |   Accuracy     |    Precision     |      Recall    |       F1
+KNeighborsClassifier             0.943514           0.000000           0.000000         nan
+RandomForestClassifier           0.959486           0.838710           0.208000         0.333333
+Use the `plot_roc_curve` function to visualize the roc curve: See files in 'plots'.
+
+Using model: KNeighborsClassifier
+Probability of default for Loan_ID: 504139525 is 0
+
+Using model: RandomForestClassifier
+Probability of default for Loan_ID: 504139525 is 0
+
+Using model: KNeighborsClassifier
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.     708242197   $    5,000,000      60.000   %     $      920,854
+2.     300591085   $    4,282,795      60.000   %     $      788,766
+3.     302781097   $    3,363,311      60.000   %     $      619,424
+4.     534378110   $   17,997,329      60.000   %     $    3,314,582
+5.     300651059   $    7,645,742      60.000   %     $    1,408,122
+6.     708240364   $    1,800,000      60.000   %     $      331,507
+7.     434000059   $    5,320,177      60.000   %     $      979,821
+8.     708239471   $    4,600,000      60.000   %     $      847,186
+9.      30309094   $   36,400,000      60.000   %     $    6,703,817
+10.      30309057   $    8,115,677      60.000   %     $    1,494,671
+
+Total outstanding balance for all loans not already in default: $109,137,708,223
+Total potential loss for loans not already in default: $1,312,409,727 (1.203%)
+Using model: RandomForestClassifier
+      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+1.     708248144   $    2,760,000      60.000   %     $      508,311
+2.     932337694   $    1,688,839      60.000   %     $      311,035
+3.     708574955   $    3,222,185      60.000   %     $      593,432
+4.     708238866   $    3,300,000      50.000   %     $      506,470
+5.     708230539   $    1,000,000      50.000   %     $      153,476
+6.     708642632   $    4,800,000      50.000   %     $      736,683
+7.     708642411   $    1,960,000      50.000   %     $      300,812
+8.     708238661   $    4,535,000      50.000   %     $      696,012
+9.     708639305   $    3,961,328      50.000   %     $      607,967
+10.     708643922   $    4,292,352      50.000   %     $      658,772
+
+Total outstanding balance for all loans not already in default: $109,137,708,223
+Total potential loss for loans not already in default: $2,172,281,436 (1.990%)
