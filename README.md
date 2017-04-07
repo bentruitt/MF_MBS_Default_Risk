@@ -264,73 +264,8 @@ After exploratory data analysis it was concluded that the MSPD dataset contained
 |  debt_serv_delta | float64 | 7855 | 7235 | -7653099.6696  | YES (cur. ds - orig. ds) |
 |  most_rct_dscr | float64 | 7855 | 1682 | 2.74  | NO |
 |  dscr_delta | float64 | 7855 | 2003 | 0.47  | YES (cur. dscr - orig. dscr) |
-|  state_AK | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_AL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_AR | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_AZ | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_CA | float64 | 7855 | 2 | 1.0  | state -> get_dummies |
-|  state_CO | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_CT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_DC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_DE | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_FL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_GA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_HI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_IA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_ID | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_IL | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_IN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_KS | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_KY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_LA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MD | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_ME | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MO | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MS | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_MT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_ND | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NE | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NH | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NJ | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NM | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NV | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_NY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_OH | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_OK | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_OR | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_PA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_RI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_SC | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_SD | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_TN | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_TX | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_UT | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_VA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_WA | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_WI | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_WV | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  state_WY | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
-|  ss_arbor_commercial_mortgage,_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_berkadia | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_berkeley_point_capital,_llc | float64 | 7855 | 2 | 1.0  | special_servicer -> get_dummies |
-|  ss_c-iii_asset_management_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_cwcapital | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_freddie_mac | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_gemsa | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_greystone_servicing_corporation,_inc. | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_keybank | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_midland_loan_services | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_pacific_life_insurance_company | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_sabal_financial_group,_l.p. | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_situs_holdings,_llc | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_torchlight | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_trimont | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_wells_fargo_bank | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
-|  ss_wells_fargo_bank_ | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
+|  state | float64 | 7855 | 2 | 0.0  | state -> get_dummies |
+|  special_servicer | float64 | 7855 | 2 | 0.0  | special_servicer -> get_dummies |
 
 ** * label of "1.0" derived from:
   * dlq_status_text (status as mapped below** - 200, 300, 350, 450 were considered
