@@ -176,7 +176,7 @@ def plot_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
     NN = tn+fp # Num negative examples
     N  = NP+NN
 
-    fig = plt.figure(figsize=(8,8))
+    fig = plt.figure(figsize=(8,9))
     ax  = fig.add_subplot(111)
     ax.imshow(C, interpolation='nearest', cmap=plt.cm.gray)
 
@@ -261,8 +261,8 @@ def plot_confusion_matrix(C, plot_dir, trial, model_nm, class_labels=['0','1']):
             ha='center',
             bbox=dict(fc='w',boxstyle='round,pad=1'))
 
+    plt.suptitle(model_nm + " - Confusion Matrix", fontsize=16, y=.98)
     plt.tight_layout()
-    plt.suptitle(model_nm + " - Confusion Matrix", y=1.08)
     plt.savefig(plot_dir + model_nm + '_Conf_Matrix_' + trial + '.png')
     plt.close()
 
@@ -469,7 +469,7 @@ if __name__ == '__main__':
 
     ### Print models
     print_file.write("\nModels:\n")
-    print_file.write(models)
+    print_file.write(str(models))
 
     ### Create StratifiedKFold generator
     cv = StratifiedKFold(y, n_folds=5, shuffle=True)
