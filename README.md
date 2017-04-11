@@ -44,11 +44,11 @@ There are many likely to be affected by a removal of the U.S. Government's impli
 **Link to Presentation Slides:** [Default Risk In Multifamily Mortgages](https://docs.google.com/presentation/d/1AvFxeSGNUIpF76LP149ydiUKDZK0Xt6j5LOWwd6UNew/pub?start=true&loop=true&delayms=3000)
 
 # Teaser
-<img align="center" src="/plots/web/GradientBoostingClassifier_default_prob_hist_f7_2017-03-14_13:11.png" alt="Default Probabilities" width=75%>
+<img align="center" src="/plots/web/GradientBoostingClassifier_default_prob_hist.png" alt="Default Probabilities" width=75%>
 
-<img align="center" src="/plots/web/GradientBoostingClassifier_ROC_plot_f7_2017-03-14_13:11.png" alt="ROC Plot" width=75%>
+<img align="center" src="/plots/web/GradientBoostingClassifier_ROC_plot.png" alt="ROC Plot" width=75%>
 
-<img align="center" src="/plots/web/GradientBoostingClassifier_Conf_Matrix_f7_2017-03-14_13:11.png" alt="Confusion Matrix" width=75%>
+<img align="center" src="/plots/web/GradientBoostingClassifier_Conf_Matrix.png" alt="Confusion Matrix" width=75%>
 
 # Observations of Data During EDA
 
