@@ -43,13 +43,6 @@ There are many likely to be affected by a removal of the U.S. Government's impli
 
 **Link to Presentation Slides:** [Default Risk In Multifamily Mortgages](https://docs.google.com/presentation/d/1AvFxeSGNUIpF76LP149ydiUKDZK0Xt6j5LOWwd6UNew/pub?start=true&loop=true&delayms=3000)
 
-# Teaser
-<img align="center" src="/plots/web/GradientBoostingClassifier_default_prob_hist.png" alt="Default Probabilities" width=75%>
-
-<img align="center" src="/plots/web/GradientBoostingClassifier_ROC_plot.png" alt="ROC Plot" width=75%>
-
-<img align="center" src="/plots/web/GradientBoostingClassifier_Conf_Matrix.png" alt="Confusion Matrix" width=75%>
-
 # Observations of Data During EDA
 
 ## Multifamily Loan Performance Dataset (MFLP) - mlpd_datamart_1q16.txt
@@ -290,4 +283,46 @@ After exploratory data analysis it was concluded that the MSPD dataset contained
 
 ## Analysis
 
-Based on evaluation of loans foreclosed in the Freddie Mac portfolio, the average percentage of outstanding balance that is recovered following disposition is 0.6930486709.
+<img align="right" src="/plots/web/GradientBoostingClassifier_default_prob_hist.png" alt="Default Probabilities" width=60% vspace=1% hspace=1%>  
+
+The first plot on the right is a distribution representing the securitized Freddie Mac loans, which have not defaulted, and their probabilities of default. Only loans with a probablitiy of default over 1% are included here.  
+
+***
+
+<img align="right" src="/plots/web/GradientBoostingClassifier_ROC_plot.png" alt="ROC Plot" width=60% vspace=1% hspace=1%>
+
+The second plot represents how well the Gradient Boosting Classifier outperforms randomly guessing which loans will default. The Mean Threshold line in this plot is a key piece of information. This represents the threshold of default probability that is used for classifying a loan as defaulted. A threshold of 100% means that only loans loans with a default probability of 100% are predicted to default. This limits the predicted defaults to a very very small number; hence, the ROC curve starting at basically a zero true positive rate and a zero false positive rate, because nothing is predicted to default. You can see that the maximum distance between the ROC curve and the random curve is at a threshold of around 0.20.
+
+***
+
+The third plot is a confusion matrix. The key values here are Precision and Recall, which are both very good for this applicaiton.
+
+<img align="center" src="/plots/web/GradientBoostingClassifier_Conf_Matrix.png" alt="Confusion Matrix" width=80% vspace=1% rspace=20%>
+
+When analyzing the loan dataset, it was found that the below features where the most significant when predicting default probabilities.
+
+<img align="center" src="/plots/web/GradientBoostingClassifier_feat_imp.png" alt="Confusion Matrix" width=80% vspace=1% rspace=20%>
+
+### Conclusion
+
+One of the key the take aways from the data is isolating the loans with the highest default probabilities. For the GradientBoostingClassifier the top nine most likely to default loans are:
+
+|   |Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |
+|:---|---:|---:|:---:|---:|
+|1.  |   330035901 |  $    2,486,832  |    96.192   %  |   $      734,267 |
+|2.  |    10102220 |  $    6,580,135  |    83.847   %  |   $    1,693,533 |
+|3.  |    10074239 |  $   28,828,882  |    74.010   %  |   $    6,549,169 |
+|4.  |    30309094 |  $   36,400,000  |    48.609   %  |   $    5,431,112 |
+|5.  |    10081445 |  $   30,897,193  |    34.854   %  |   $    3,305,505 |
+|6.  |    10054726 |  $   33,968,168  |    20.187   %  |   $    2,104,777 |
+|7.  |    10062430 |  $   26,811,684  |    18.713   %  |   $    1,540,038 |
+|8.  |    10060807 |  $   27,718,286  |    16.785   %  |   $    1,428,131 |
+|9.  |    10064716 |  $   22,282,000  |    15.647   %  |   $    1,070,165 |
+
+The potential loss is based on evaluation of loans foreclosed in the Freddie Mac portfolio. The average percentage of outstanding balance that is recovered following disposition is 0.6930486709.
+
+Total outstanding balance for all loans not already in default: $109,137,708,223  
+
+Total potential loss for loans not already in default: $49,329,738 (0.045%)
+
+This potential loss is significant; however, is irrelevant to an investor since Freddie Mac securities have the implicit guarantee of the U.S. Government. This analysis could also easily be applied to other multifamily loan datasets, such as, CMBS multifamily loans or properties held by REITs. The information captured from this model could be utilized to structure an investment strategy leveraging the high or low probabilities of default for various properties.

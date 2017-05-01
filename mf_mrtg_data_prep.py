@@ -227,7 +227,7 @@ def clean_mspd_data(df):
     return df
 
 if __name__ == '__main__':
-    datadir = 'data/'
+    datadir = '~/data/MF_MBS_Default_Risk/'
 
     ### determine whether or not to plot histograms of MSPD
     plot_hists = bool(raw_input('Would you like to plot a histogram for each MSPD column? [y/n]')=='y')
