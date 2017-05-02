@@ -283,6 +283,15 @@ After exploratory data analysis it was concluded that the MSPD dataset contained
 
 ## Analysis
 
+Five machine learning algorithms were applied in the analysis:
+* LogisticRegression
+* DecisionTreeClassifier
+* GradientBoostingClassifier
+* KNeighborsClassifier
+* RandomForestClassifier
+
+The best results were obtained using the GradientBoostingClassifier. The output from this algorithm is presented in the following analysis.
+
 <img align="right" src="/plots/web/GradientBoostingClassifier_default_prob_hist.png" alt="Default Probabilities" width=60% vspace=1% hspace=1%>  
 
 The first plot on the right is a distribution representing the securitized Freddie Mac loans, which have not defaulted, and their probabilities of default. Only loans with a probablitiy of default over 1% are included here.  

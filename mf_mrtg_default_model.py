@@ -578,23 +578,23 @@ if __name__ == '__main__':
     ## percent of loan balance lost following foreclosure 0.3069513291
     m = 10
     loss_pct = 0.3069513291
-    nondef = y==0
-    X_nondef = X_t[nondef]
-    loans_nondef = loan_ids[nondef]
-    df_nondef = df[nondef]
-    df_nondef = df_nondef.reset_index(drop=True)
+    active = np.array((y==0) & (df['current_balance'] > 0))
+    X_active = X_t[active]
+    loans_active = loan_ids[active]
+    df_active = df[active]
+    df_active = df_active.reset_index(drop=True)
     for i, model in enumerate(models):
-        y_probs_nd = model.predict_proba(X_nondef)[:,1]
+        y_probs_nd = model.predict_proba(X_active)[:,1]
         srt_idx = np.argsort(y_probs_nd)[::-1]
         top_m_probs = y_probs_nd[srt_idx][:m]
-        top_m_loan_ids = loans_nondef[srt_idx][:m]
-        df_top_m = df_nondef.iloc[srt_idx]
+        top_m_loan_ids = loans_active[srt_idx][:m]
+        df_top_m = df_active.iloc[srt_idx].iloc[:m,:]
         print_file.write("\nUsing model: %s" % run_models[i])
         print_file.write("\n      Loan ID:   |    Balance:    |  Default Prob:  |  Potential Loss:  |")
         for j, loan in enumerate(top_m_loan_ids):
             print_file.write("\n%d. %s   %s   %s     %s" % (j+1, '{:13}'.format(loan), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j]), '{:^12,.3f}%'.format(100.*top_m_probs[j]), '${:>13,.0f}'.format(df_top_m['current_balance'].iloc[j] * top_m_probs[j] * loss_pct)))
-        tot_pot_loss = np.sum(df_nondef['current_balance']*y_probs_nd)*loss_pct
-        tot_bal = df_nondef['current_balance'].sum()
+        tot_pot_loss = np.sum(df_active['current_balance']*y_probs_nd)*loss_pct
+        tot_bal = df_active['current_balance'].sum()
         print_file.write("\n\nTotal outstanding balance for all loans not already in default: %s" % ('${:,.0f}'.format(tot_bal)))
         print_file.write("\nTotal potential loss for loans not already in default: %s (%s)" % ('${:,.0f}'.format(tot_pot_loss), "{0:.3f}%".format(float(tot_pot_loss)/float(tot_bal) * 100.)))
 
