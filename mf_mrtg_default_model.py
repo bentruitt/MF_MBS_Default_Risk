@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
     plot_dir = 'plots/'
     trial = 'f7'
-    datadir = '~/data/MF_MBS_Default_Risk/'
+    datadir = 'data/'
     file_options = ['df_comb_labeled', 'df_mspd_labeled_built_up', 'df_mflp_labeled', 'df_mspd_labeled']
     classifiers = [LogisticRegression, DecisionTreeClassifier, GradientBoostingClassifier, KNeighborsClassifier, RandomForestClassifier] #
     scores = ['f1'] # 'precision_macro', 'recall_macro', 'f1_weighted'
