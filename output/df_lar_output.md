@@ -22,9 +22,9 @@ These include all loan applications irregardless of application outcome. Applica
 
 ## 2015 Multifamily Applications Closed
 
-* Loan Amount < $2,000,000s
+* Loan Amount < $2,000,000
 * Loan Originated / Closed
-* Multifamily Loans (5| Units)
+* Multifamily Loans (5+ Units)
 
 |Loan Purchaser                                             |Loan Volume(000s)|Loan Volume(000s)(<$2M)|
 |-----------------------------------------------------------|----------------:|----------------------:|
